@@ -1,11 +1,6 @@
 package main
 
-import (
-    "log"
-    "net/http"
-    "forum/server/rt" // Correct import
-    "forum/function"  // Correct import
-)
+import ( "log" ; "net/http" ;  "forum/server/rt")
 
 func main() {
     rt.InitRoutes()
