@@ -1,13 +1,6 @@
 package main
 
-import (
-	"database/sql"
-	"fmt"
-	"log"
-	"net/http"
-
-	"forum/function"
-
+import ( "database/sql" ; "fmt" ; "forum/function" ; "forum/server/DataBase" ;"forum/server/rt" ; "log" ; "net/http"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,10 +10,17 @@ var db *sql.DB
 func main() {
 	var err error
 	db, err = sql.Open("sqlite3", "../users.db")
-	if err != nil {
-		log.Fatal(err)
-	}
+	if err != nil { log.Fatal(err) }
 
+	//initialize the database
+	DataBase.InitDB()
+	//check routes
+	rt.InitRoutes()
+	log.Println("The server is running on port 8080")
+	err = http.ListenAndServe(":8080", nil)	
+	if err != nil { log.Fatal("Error starting server: ", err) }
+	
+	
 	// Create table
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
@@ -42,6 +42,7 @@ func main() {
 	http.HandleFunc("/login", function.LoginHandler)
 	http.HandleFunc("/dashboard", function.DashboardHandler)
 
+	
 	fmt.Println("Server running at http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
