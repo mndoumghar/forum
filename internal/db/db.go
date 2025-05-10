@@ -1,89 +1,57 @@
-<<<<<<< HEAD
 package db
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
-var DB *sql.DB
-
-func InitDB() error {
-	var err error
-	DB, err = sql.Open("sqlite3", "./forum.db")
+// OpenDB opens a connection to the SQLite database.
+// It returns a pointer to the database connection.
+func OpenDB() (*sql.DB, error) {
+	// Open the SQLite database file
+	db, err := sql.Open("sqlite3", "./forum.db")
 	if err != nil {
-		return err
+		log.Fatal("Error opening the database: ", err)
+		return nil, err
 	}
 
-	// Create tables (from SQL provided earlier)
-	createTables := `
-		CREATE TABLE IF NOT EXISTS users (
-			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-			email TEXT UNIQUE NOT NULL,
-			username TEXT UNIQUE NOT NULL,
-			password_hash TEXT UNIQUE NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);
-		-- Add other CREATE TABLE statements here
-	`
-	_, err = DB.Exec(createTables)
-	return err
-}
-=======
-package db
-
-import (
-	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
-)
-
-var DB *sql.DB
-
-func InitDB() error {
-	var err error
-	DB, err = sql.Open("sqlite3", "./forum.db")
+	// Verify the connection to the database
+	err = db.Ping()
 	if err != nil {
-		return err
+		log.Fatal("Error pinging the database: ", err)
+		return nil, err
 	}
 
-	// Create tables (from SQL provided earlier)
-	createTables := `
-		CREATE TABLE IF NOT EXISTS users (
-			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-			email TEXT UNIQUE NOT NULL,
-			username TEXT NOT NULL,
-			password TEXT NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);
-		-- Add other CREATE TABLE statements here
-	`
-	_, err = DB.Exec(createTables)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return db, nil
 }
 
-	// IsUserExists checks if a username or email is already in use.
-	func IsUserExists(username, email string) (bool, error) {
-		var EXITs bool
-		query := `SELECT EXISTS(SELECT 1 FROM users WHERE username = ? OR email = ?)`
-		err := DB.QueryRow(query, username, email).Scan(&EXITs)
-		if err != nil {
-			return false, err
-		}
-		return EXITs, nil
+// User represents a user in the database
+type User struct {
+	ID        int
+	Email     string
+	Username  string
+	Password  string
+	CreatedAt string
+}
+
+// GetUserByEmail retrieves a user by their email.
+func GetUserByEmail(email string) (*User, error) {
+	// Open the database connection
+	db, err := OpenDB()
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close() // Ensure the DB connection is closed
+
+	// Prepare the query to find a user by email
+	var u User
+	err = db.QueryRow("SELECT id, email, username, password, created_at FROM users WHERE email = ?", email).
+		Scan(&u.ID, &u.Email, &u.Username, &u.Password, &u.CreatedAt)
+	if err != nil {
+		return nil, err
 	}
 
-// CreateUser inserts a new user into the database.
-	func CreateUser(username , email , hashedPassword string) error {
-		query := `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`
-		_, err := DB.Exec(query, username, email, hashedPassword)
-		if err != nil {
-			return err
-		}
-		return err
-	}
-
->>>>>>> 45193a583d02665e59fba785b999e8bf16e9d9b3
+	return &u, nil
+}

@@ -2,24 +2,18 @@ package main
 
 import (
 	"fmt"
-	"forum/internal/db"
 	"forum/internal/handlers"
 	"net/http"
 )
 
 func main() {
-	// Initialize database
-	if err := db.InitDB(); err != nil {
-		fmt.Printf("Failed to initialize database: %v\n", err)
-		return
-	}
-
+	
 	// Register handlers
 	http.HandleFunc("/register", handlers.RegisterHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
-	http.HandleFunc("/posts", handlers.PostsHandler)
-	http.HandleFunc("/comment", handlers.CommentHandler)
-	http.HandleFunc("/like", handlers.LikeHandler)
+	//http.HandleFunc("/posts", handlers.PostsHandler)
+	//http.HandleFunc("/comment", handlers.CommentHandler)
+	//http.HandleFunc("/like", handlers.LikeHandler)
 
 	// Serve static files
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
