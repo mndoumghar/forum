@@ -1,0 +1,16 @@
+
+Oerraoui :
+
+- create a new file utiles/validation.go //handle info checkers
+- internal/db.go (update) "add functions" 
+    IsUserExists checks if a username or email is already in use.
+    CreateUser inserts a new user into the database.
+    
+
+
+
+
+
+Mndoumghar :
+
+- 
