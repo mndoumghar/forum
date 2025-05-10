@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+package rt
+
+import ( "net/http" ; "forum/server/ctrl")
+
+func InitRoutes() {
+    http.HandleFunc("/forum/register", ctrl.Register)
+    http.HandleFunc("/forum/login", ctrl.Login)
+=======
 package rt
 
 import ( "net/http" ; "fmt" ; "os")
@@ -44,4 +53,5 @@ func InitRoutes() {
 
     // http.HandleFunc("/forum/register", ctrl.Register)
     // http.HandleFunc("/forum/login", ctrl.Login)
+>>>>>>> f5d7041ae4b99c153e912c23f0b06b8c2bc42bbe
 }
