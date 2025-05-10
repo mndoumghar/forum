@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"form/internal/db"
-	"form/internal/handlers"
+	"forum/internal/db"
+	"forum/internal/handlers"
 	"net/http"
 )
 

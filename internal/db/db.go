@@ -19,8 +19,8 @@ func InitDB() error {
 		CREATE TABLE IF NOT EXISTS users (
 			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			email TEXT UNIQUE NOT NULL,
-			username TEXT NOT NULL,
-			password TEXT NOT NULL,
+			username TEXT UNIQUE NOT NULL,
+			password_hash TEXT UNIQUE NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
 		-- Add other CREATE TABLE statements here
