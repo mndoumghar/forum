@@ -1,0 +1,116 @@
+body {
+    width: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.5)50%, rgba(0,0,0,0.5)50%), url('banner6.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.787);
+}
+
+.login-form h1 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    font-weight: bolder;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-form input[type="submit"] {
+    width: 100%;
+    background-color: #525252; /* Default color */
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.login-form input[type="submit"]:hover {
+    background-color: #1b23ae; /* Color when hovered */
+}
+
+.extra-options {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.extra-options a {
+    color: #1524c5;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.extra-options span {
+    margin: 0 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.alert {
+    margin-top: 10px;
+    padding: 15px;
+    color: white;
+    border-radius: 10px;
+}
+
+.alert.danger {
+    background-color: rgb(248, 149, 49);
+}
+
+.alert.succes {
+    background-color: #2bd47d;
+}
+
+.alert.warning {
+    background-color: darkgoldenrod;
+}
+
+
+
+
+

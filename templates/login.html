@@ -1,0 +1,48 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+<div class="main">
+    <div class="container">
+       
+
+        <form action="/login" method="POST" class="login-form">
+            <h1>Log In</h1>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" >
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" >
+            </div>
+            <input type="submit" name="login" value="Login">
+            <div class="extra-options">
+                <a href="/">Forgot Password?</a>
+                <span>or</span>
+                <a href="/register">Sign Up</a>
+
+                <div>
+                    {{ if .Error }}
+                    <p style="color: {{ .Color }};">{{ .Error }}</p>
+                {{ end }}
+                </div>
+
+               
+            </div>
+        </form>
+       
+    </div>
+    
+</div>
+
+</body>
+</html>

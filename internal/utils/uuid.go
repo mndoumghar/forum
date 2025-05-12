@@ -1,16 +1,11 @@
 package utils
 
-import (
-	"github.com/gofrs/uuid"
-	"log"
-)
+import "github.com/gofrs/uuid"
 
-// GenerateUUID generates a new UUID.
-func GenerateUUID() string {
-	// Generate a new UUID
-	newUUID, err := uuid.NewV4()
+func GenerateUUID() (string, error) {
+	id, err := uuid.NewV4()
 	if err != nil {
-		log.Fatalf("Failed to generate UUID: %v", err)
+		return "", err
 	}
-	return newUUID.String()
+	return id.String(), nil
 }

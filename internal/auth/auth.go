@@ -4,7 +4,6 @@ import (
 	"forum/internal/db"
 	"forum/internal/utils"
 	"net/http"
-	// "golang.org/x/crypto/bcrypt"
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +27,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+	_, err = db.DB.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
 		email, username, hashedPw)
 	if err != nil {
 		http.Error(w, "Registration failed", http.StatusInternalServerError)

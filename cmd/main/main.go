@@ -2,30 +2,38 @@ package main
 
 import (
 	"fmt"
+	"forum/internal/db"
 	"forum/internal/handlers"
 	"net/http"
 )
 
 func main() {
-	
-	// Register handlers
+	// Initialize database
+	if err := db.InitDB(); err != nil {
+		fmt.Printf("Failed to initialize database: %v\n", err)
+		return
+	}
+
+	// Register handlers All Function from Dossier Hanlres --->----
 	http.HandleFunc("/register", handlers.RegisterHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
-	//http.HandleFunc("/posts", handlers.PostsHandler)
-	//http.HandleFunc("/comment", handlers.CommentHandler)
-	//http.HandleFunc("/like", handlers.LikeHandler)
+	http.HandleFunc("/posts", handlers.PostsHandler)
+	http.HandleFunc("/creatpost", handlers.CreatpostHandler)
+
+	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
+	//	http.HandleFunc("/comment", handlers.CommentHandler)
+	//	http.HandleFunc("/like", handlers.LikeHandler)
 
 	// Serve static files
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// Add a root handler to serve index.html
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// If the path is exactly "/", serve index.html
 		if r.URL.Path == "/" {
 			http.ServeFile(w, r, "static/index.html")
 			return
 		}
-		// For any other unmatched paths, return 404
+		
 		http.NotFound(w, r)
 	})
 

@@ -1,49 +1,14 @@
-
-
 body {
-    background-color: rgb(22, 28, 28);
-    font-family: Arial;
-    color: #3333;
-    font-size: 16px;
+    font-family: Arial, sans-serif;
+    margin: 20px;
 }
-
 h1 {
-    color: #A599E8;
-    font-size: 32px;
-    text-align: center;
+    color: #333;
 }
-
-p {
-    color: #555555;
-    line-height: 1.6;
+form {
+    margin-top: 20px;
 }
-
-
-/* .container {
-    display: flex;
-    flex-direction: ;
-} */
-
-
-
-
-
-/* background: #a599e8; */
-/* background: linear-gradient(90deg, rgba(165, 153, 232, 1) 0%, rgba(0, 0, 0, 1) 35%, rgba(20, 17, 17, 1) 64%, rgba(70, 24, 107, 1) 100%); */
-
-
-
-
-
-
-
-
-
-
-
-
- /* flex-direction: row | row-reverse | column | column-reverse; */
- /* flex-wrap: nowrap | wrap | wrap-reverse; */
- /* justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly | start | end | left | right ... + safe | unsafe; */
-
-
+input, button {
+    margin: 5px;
+    padding: 5px;
+}

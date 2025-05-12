@@ -2,56 +2,72 @@ package db
 
 import (
 	"database/sql"
-	"log"
-
-	_ "github.com/mattn/go-sqlite3" // SQLite driver
+	_ "github.com/mattn/go-sqlite3"
 )
 
-// OpenDB opens a connection to the SQLite database.
-// It returns a pointer to the database connection.
-func OpenDB() (*sql.DB, error) {
-	// Open the SQLite database file
-	db, err := sql.Open("sqlite3", "./forum.db")
+var DB *sql.DB
+
+func InitDB() error {
+	var err error
+	DB, err = sql.Open("sqlite3", "./forum.db")
 	if err != nil {
-		log.Fatal("Error opening the database: ", err)
-		return nil, err
+		return err
 	}
 
-	// Verify the connection to the database
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Error pinging the database: ", err)
-		return nil, err
-	}
-
-	return db, nil
-}
-
-// User represents a user in the database
-type User struct {
-	ID        int
-	Email     string
-	Username  string
-	Password  string
-	CreatedAt string
-}
-
-// GetUserByEmail retrieves a user by their email.
-func GetUserByEmail(email string) (*User, error) {
-	// Open the database connection
-	db, err := OpenDB()
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close() // Ensure the DB connection is closed
-
-	// Prepare the query to find a user by email
-	var u User
-	err = db.QueryRow("SELECT id, email, username, password, created_at FROM users WHERE email = ?", email).
-		Scan(&u.ID, &u.Email, &u.Username, &u.Password, &u.CreatedAt)
-	if err != nil {
-		return nil, err
-	}
-
-	return &u, nil
+	// Create tables
+	createTables := `
+		CREATE TABLE IF NOT EXISTS users (
+			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			email TEXT UNIQUE NOT NULL,
+			username TEXT NOT NULL,
+			password TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+		CREATE TABLE IF NOT EXISTS sessions (
+			session_id TEXT PRIMARY KEY,
+			user_id INTEGER NOT NULL,
+			expires_at TIMESTAMP NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(user_id)
+		);
+		CREATE TABLE IF NOT EXISTS posts (
+			post_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			title TEXT NOT NULL,
+			content TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(user_id)
+		);
+		CREATE TABLE IF NOT EXISTS categories (
+			category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT UNIQUE NOT NULL
+		);
+		CREATE TABLE IF NOT EXISTS post_categories (
+			post_id INTEGER NOT NULL,
+			category_id INTEGER NOT NULL,
+			PRIMARY KEY (post_id, category_id),
+			FOREIGN KEY (post_id) REFERENCES posts(post_id),
+			FOREIGN KEY (category_id) REFERENCES categories(category_id)
+		);
+		CREATE TABLE IF NOT EXISTS comments (
+			comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			post_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			content TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (post_id) REFERENCES posts(post_id),
+			FOREIGN KEY (user_id) REFERENCES users(user_id)
+		);
+		CREATE TABLE IF NOT EXISTS like_dislikes (
+			user_id INTEGER NOT NULL,
+			target_id INTEGER NOT NULL,
+			target_type TEXT NOT NULL CHECK (target_type IN ('post', 'comment')),
+			value INTEGER NOT NULL CHECK (value IN (1, -1)),
+			PRIMARY KEY (user_id, target_id, target_type),
+			FOREIGN KEY (user_id) REFERENCES users(user_id),
+			FOREIGN KEY (target_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+			FOREIGN KEY (target_id) REFERENCES comments(comment_id) ON DELETE CASCADE
+		);
+	`
+	_, err = DB.Exec(createTables)
+	return err
 }
