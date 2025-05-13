@@ -8,8 +8,6 @@ import (
 	"forum/internal/db"
 )
 
-
-
 func CreatpostHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(db.GetPost())
 	if r.Method == http.MethodGet {
@@ -26,13 +24,5 @@ func CreatpostHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
-	
-
-
-
-
-
-
 
 }

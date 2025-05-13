@@ -33,7 +33,7 @@ func main() {
 			http.ServeFile(w, r, "static/index.html")
 			return
 		}
-		
+
 		http.NotFound(w, r)
 	})
 

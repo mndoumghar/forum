@@ -19,7 +19,7 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 	if err != nil {
 		return err
 	}
-	
+
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_id",
 		Value:   sessionID.String(),

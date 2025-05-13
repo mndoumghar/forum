@@ -1,51 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home - Forum</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
- 
-    <header>
-        <ul>
-            <li>
-
-                <h1><a href="/posts">Forum</a></h1>
-
-            </li>
-            <li>
-                <h1>MY Username : {{.Username}}</h1>
-            </li>
-            <li>
-                <a href="logout"> Log_Out</a>
-            </li>
-            <li>
-                <a href="/creatpost">creatpost</a>
-            </li>
-        </ul>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <h1><a href="/posts">Forum</a></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/logout">Log Out</a></li>
+                <li><a href="/creatpost">Create Post</a></li>
+            </ul>
+        </nav>
     </header>
 
-            <table border="1">
-                <tr>
-                    <td>Username</td>
-                    <td>Post_Content</td>
-                </tr>
-                <tr>
-                   
-                </tr>
-                <tr>
-                </tr>
-            </table>
-            <br><br>
-            {{range .posts}}
-            {{.}}
-            {{end}}
-            
-
-
+    <!-- Main Content -->
+    <main class="container">
+        <div class="posts">
+            {{ range . }}
+            <div class="post-card">
+                <div class="post-header">
+                    <span class="username">{{ .Username }}</span>
+                    <span class="post-date">{{ .CreatedAt }}</span>
+                </div>
+                <div class="post-content">
+                    <p>{{ .Content }}</p>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </main>
 </body>
-
 </html>
+<style>
+    /* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+     background-image: linear-gradient(rgba(0,0,0,0.5)50%, rgba(0,0,0,0.5)50%), url('./static/banner6.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #24292e; /* لون داكن زي X.com */
+    padding: 20px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo a {
+    font-size: medium;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #1da1f2; /* لون زي X.com */
+}
+
+/* Main Container */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* Posts Cards */
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #606770;
+    margin-bottom: 10px;
+}
+
+.username {
+    font-weight: bold;
+    color: #1c1e21;
+}
+
+.post-date {
+    color: #606770;
+}
+
+.post-content {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.post-content p {
+    margin: 0;
+}
+</style>

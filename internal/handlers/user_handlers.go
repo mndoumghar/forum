@@ -1,8 +1,7 @@
 package handlers
 
 import (
-	"fmt"
-	"log"
+	
 	"net/http"
 	"text/template"
 	"time"
@@ -81,13 +80,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl, _ := template.ParseFiles("templates/register.html")
-	// error.Error = "Registration y____successful"
 
 	tmpl.Execute(w, Data.ErrorColor[1])
 
-	// w.WriteHeader(http.StatusCreated)
-
-	// w.Write([]byte("Registration successful"))
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -118,10 +113,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	user, err := db.GetUserByEmail(email)
-	if err != nil {
-		// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-		// return
 
+	if err != nil {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -132,10 +125,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		// http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-		// return
 
-		// data.Error = "Password or email not correct"
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -145,51 +135,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create session (to be implemented in auth/session.go)
+	http.Redirect(w, r, "/posts",http.StatusSeeOther)
 
-	//          w.Write([]byte("Login successful"))
 
-	var u User
-
-	// db.DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users").
-	// 	Scan(&u.ID, &u.Email, &u.Username, &u.Password, &u.CreatedAt)
-
-	tmpl, _ := template.ParseFiles("templates/home.html")
-	// tmpl.Execute(w, u)
-
-	rows, err := db.DB.Query(`SELECT u.username, p.content FROM posts p JOIN users u ON p.user_id = u.user_id`)
-	if err != nil {
-		// Log the error for debugging purposes
-		log.Printf("Error querying database: %v", err)
-		// Send an error response
-		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
-		return
-	}
-
-	var posts []Post
-	var users []User
-	var p Post
-	for rows.Next() {
-
-		err := rows.Scan(&u.Username, &p.Content)
-		if err != nil {
-			log.Printf("Error scanning row: %v", err)
-			continue // Skip this row
-		}
-		posts = append(posts, p)
-		users = append(users, u)
-	}
-	fmt.Println(posts)
-	err = tmpl.Execute(w, posts)
-
-	if err = rows.Err(); err != nil {
-		log.Printf("Error iterating rows: %v", err)
-	}
-
-	if err != nil {
-		// Log the error if template execution fails
-		log.Printf("Error executing template: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+	
 }
