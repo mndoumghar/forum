@@ -3,31 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create Post</title>
 </head>
 <body>
-        <legend><h1>creat post</h1></legend>
-        <div class="content">
+    <legend><h1>Create Post</h1></legend>
+    <div class="content">
+        <form action="/creatpost" method="post">
+            <table>
+                <tr>
+                    <td>Content:</td>
+                    <td><input type="text" name="content" id="content" required></td>
+                </tr>
 
-                <table>
-                    <form action="/creatpost"  method="post">
+                <tr>
+                    <td>Status: </td>
+                    <td>
+                        <input type="checkbox" name="status" value="sport" id="sport">
+                        <label for="sport">Sport</label>
+                        <br>
+                        <input type="checkbox" name="status" value="academy" id="academy">
+                        <label for="academy">Academy</label>
+                        <br>
+                        <input type="checkbox" name="status" value="developer" id="developer">
+                        <label for="developer">Developer</label>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>Content :</td>
-                        <td><input type="text" name="content" id="content"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="submit" value="Add New Post">
-                        </td>
-                    </tr>
-                </form>
-
-                </table>
-
-
-        </div>
-    </fieldset>
-<fieldset>
+                <tr>
+                    <td>
+                        <input type="submit" value="Add New Post">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 </html>

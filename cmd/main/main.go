@@ -21,7 +21,6 @@ func main() {
 	http.HandleFunc("/creatpost", handlers.CreatePostHandler)
 	http.HandleFunc("/comment", handlers.CommentHandler)
 
-
 	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
 	//	http.HandleFunc("/comment", handlers.CommentHandler)
 	//	http.HandleFunc("/like", handlers.LikeHandler)
