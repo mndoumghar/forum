@@ -27,7 +27,7 @@
                 <div class="post-header">
                     <span class="username">{{ .Username }}</span>
                     <span class="post-date">{{ .CreatedAt }}</span>
-                    <form action="/comment" method="post">
+                    <form action="/comment" method="GET">
                     Commenter: <input type="text" name="comment" id="">
                     <span><input type="submit" value="Click"></span>
                     </form>
