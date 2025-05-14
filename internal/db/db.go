@@ -23,12 +23,14 @@ func InitDB() error {
 			password TEXT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
+
 		CREATE TABLE IF NOT EXISTS sessions (
 			session_id TEXT PRIMARY KEY,
 			user_id INTEGER NOT NULL,
 			expires_at TIMESTAMP NOT NULL,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
+
 		CREATE TABLE IF NOT EXISTS posts (
 			post_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -37,17 +39,7 @@ func InitDB() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
-		CREATE TABLE IF NOT EXISTS categories (
-			category_id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT UNIQUE NOT NULL
-		);
-		CREATE TABLE IF NOT EXISTS post_categories (
-			post_id INTEGER NOT NULL,
-			category_id INTEGER NOT NULL,
-			PRIMARY KEY (post_id, category_id),
-			FOREIGN KEY (post_id) REFERENCES posts(post_id),
-			FOREIGN KEY (category_id) REFERENCES categories(category_id)
-		);
+		
 		CREATE TABLE IF NOT EXISTS comments (
 			comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			post_id INTEGER NOT NULL,
@@ -57,16 +49,7 @@ func InitDB() error {
 			FOREIGN KEY (post_id) REFERENCES posts(post_id),
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
-		CREATE TABLE IF NOT EXISTS like_dislikes (
-			user_id INTEGER NOT NULL,
-			target_id INTEGER NOT NULL,
-			target_type TEXT NOT NULL CHECK (target_type IN ('post', 'comment')),
-			value INTEGER NOT NULL CHECK (value IN (1, -1)),
-			PRIMARY KEY (user_id, target_id, target_type),
-			FOREIGN KEY (user_id) REFERENCES users(user_id),
-			FOREIGN KEY (target_id) REFERENCES posts(post_id) ON DELETE CASCADE,
-			FOREIGN KEY (target_id) REFERENCES comments(comment_id) ON DELETE CASCADE
-		);
+		
 	`
 	_, err = DB.Exec(createTables)
 	return err

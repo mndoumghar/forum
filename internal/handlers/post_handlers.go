@@ -18,10 +18,9 @@ type Post struct {
 }
 
 type PostWithUser struct {
-	Username string
-	Content  string
+	Username  string
+	Content   string
 	CreatedAt string
-
 }
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,13 +41,13 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	var posts []PostWithUser
 	for rows.Next() {
 		var p PostWithUser
-		err = rows.Scan(&p.Username, &p.Content,&p.CreatedAt)
+		err = rows.Scan(&p.Username, &p.Content, &p.CreatedAt)
 		//CreatedAt  created_at
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			continue // if i meet some line Erro its skip Error
 		}
-		posts = append(posts, p) // show allPost 
+		posts = append(posts, p) // show allPost
 	}
 
 	if err = rows.Err(); err != nil {

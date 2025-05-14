@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <!-- Header / Navbar -->
     <header class="navbar">
         <div class="logo">
             <h1><a href="/posts">Forum</a></h1>
@@ -28,6 +27,10 @@
                 <div class="post-header">
                     <span class="username">{{ .Username }}</span>
                     <span class="post-date">{{ .CreatedAt }}</span>
+                    <form action="/comment" method="post">
+                    Commenter: <input type="text" name="comment" id="">
+                    <span><input type="submit" value="Click"></span>
+                    </form>
                 </div>
                 <div class="post-content">
                     <p>{{ .Content }}</p>
@@ -61,7 +64,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #24292e; /* لون داكن زي X.com */
-    padding: 20px 20px;
+    padding: 20px 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -112,13 +115,13 @@ nav ul li a:hover {
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
+    padding: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
 
 .post-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
 }
 
 .post-header {

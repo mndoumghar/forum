@@ -41,10 +41,10 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Temporary user ID (replace with actual session-based user ID)
 		userID := 1 // Replace with session logic to get authenticated user ID
-		title:= "Firs ID"
+		title := "Firs ID"
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content, title) VALUES (?, ?, ?)", userID, content,title)
+		_, err = db.DB.Exec("INSERT INTO posts(user_id, content, title) VALUES (?, ?, ?)", userID, content, title)
 		if err != nil {
 			http.Error(w, "Failed to create post", http.StatusInternalServerError)
 			return
