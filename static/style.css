@@ -1,14 +1,98 @@
 body {
+    background-image: url('/static/img1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 0;
+
+
+    /* Flexbox for vertical and horizontal centering */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+    height: 100vh;          /* Full viewport height */
 }
-h1 {
+
+
+
+
+
+
+/* Wrapper for the blurred background */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/img1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: blur(20px); /* Apply blur only to the background */
+    z-index: -1; /* Ensure it stays behind other content */
+}
+
+/* Content styling */
+.content {
+    position: relative;
+    z-index: 1; /* Ensure content is above the blurred background */
+    font-family: Arial, sans-serif;
+}
+
+
+/* Basic styles for Create Post form */
+
+
+
+.create-post-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 24px;
+background: rgba(255, 255, 255, 0.7); /* Slightly transparent white */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.9);
+}
+
+.create-post-container h2 {
+    margin-bottom: 16px;
+    font-size: 1.5em;
     color: #333;
 }
-form {
-    margin-top: 20px;
+
+.create-post-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #444;
 }
-input, button {
-    margin: 5px;
-    padding: 5px;
+
+    /* the text input CONTAINER */
+.create-post-form input[type="text"],
+.create-post-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    background: #fff;
+    resize: vertical;
+}
+
+.create-post-form button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.create-post-form button:hover {
+    background: #0056b3;
 }

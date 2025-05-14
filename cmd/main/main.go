@@ -39,7 +39,8 @@ func main() {
 		http.NotFound(w, r)
 	})
 
-	fmt.Println("Server starting on :8080...")
+	fmt.Println("server started at :8080\nVisit http://localhost:8080 to access the forum.")
+
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Printf("Server failed: %v\n", err)
 	}
