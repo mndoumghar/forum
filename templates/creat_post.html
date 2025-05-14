@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>Create Post</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-        <legend><h1>creat post</h1></legend>
-        <div class="content">
-
-                <table>
-                    <form action="/creatpost"  method="post">
-
-                    <tr>
-                        <td>Content :</td>
-                        <td><input type="text" name="content" id="content"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="submit" value="Add New Post">
-                        </td>
-                    </tr>
-                </form>
-
-                </table>
-
-
+  <div class="background"></div> <!-- Blurred background -->
+  
+  <div class="content">
+    <div class="create-post-container">
+      <h2>Create a New Post</h2>
+      <center>
+      <form class="create-post-form" action="/create_post" method="post">
+        <label for="title">Title:</label>
+       <center><input type="text" id="title" name="title" required></center> 
+        <div class="category">
+          <input type="checkbox" name="status" value="sport" id="sport">
+                        <label for="sport">Sport</label>
+                        <br>
+                        <input type="checkbox" name="status" value="academy" id="academy">
+                        <label for="academy">Academy</label>
+                        <br>
+                        <input type="checkbox" name="status" value="developer" id="developer">
+                        <label for="developer">Developer</label>
         </div>
-    </fieldset>
-<fieldset>
-</body>
-</html>
+        
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" rows="6" required></textarea>
+        
+        <button type="submit">Submit</button>
+      </form>
+   </center>
+    </div>
+  </div>

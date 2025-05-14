@@ -4,15 +4,13 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
 
 
     /* Flexbox for vertical and horizontal centering */
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;    /* Center vertically */
-    height: 100vh;          /* Full viewport height */
+    justify-content: center; 
+    align-items: center;    
+    height: 100vh;          
 }
 
 
@@ -35,9 +33,10 @@ body {
     z-index: -1; /* Ensure it stays behind other content */
 }
 
+
 /* Content styling */
 .content {
-    position: relative;
+    position: center;
     z-index: 1; /* Ensure content is above the blurred background */
     font-family: Arial, sans-serif;
 }
@@ -48,9 +47,13 @@ body {
 
 
 .create-post-container {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 24px;
+    display: grid;
+    padding: 40px ;
+    margin-left: 50px;
+    
+    
+    position: center;
+   
 background: rgba(255, 255, 255, 0.7); /* Slightly transparent white */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.9);
