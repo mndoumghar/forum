@@ -71,7 +71,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
-	// Declar Struct Type Error From CSS   
+	// Declar Struct Type Error From CSS
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Password or email not correct", Color: "red"},
@@ -99,9 +99,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-					//  Tach---> oussama\\
+	//  Tach---> oussama\\
 	//   can u Check all Errors possible About email And Password
-	//  If these Variables WAS empty  then Add in Struct error for Exmple 	{Error: "Registration successful 🚀✨💪🏆 ", Color: "green"}, 
+	//  If these Variables WAS empty  then Add in Struct error for Exmple 	{Error: "Registration successful 🚀✨💪🏆 ", Color: "green"},
 	// *** "Email Or Password is Empty please Insert Your Information"
 	// You Can Add THe most Error obligatiore like you should to Add all Input Maximum superier >6 charcater ...
 	//  Add Another baakcgriund like this  BUt i need  like as Project Forum Or media onginral  and you u most to respect color background Shadow in  some Black image
