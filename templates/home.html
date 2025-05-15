@@ -6,13 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Forum</title>
     <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+
+
 </head>
 
 <body>
-    <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+    <style>
+       button {
+            cursor: pointer;
+            outline: 0;
+            color: #AAA;
+
+        }
+    
+
+        .btn:focus {
+            outline: none;
+        }
+
+        #green {
+            color: green;
+        }
+
+        #red {
+            color: red;
+        }
+    </style>
+
 
     <header class="navbar">
         <div class="logo">
@@ -27,48 +48,13 @@
             </ul>
         </nav>
     </header>
-    <script>
-
-        var btn1 = document.querySelector('#green');
-        var btn2 = document.querySelector('#red');
-
-        btn1.addEventListener('click', function () {
-
-            if (btn2.classList.contains('red')) {
-                btn2.classList.remove('red');
-            }
-            this.classList.toggle('green');
-
-        });
-
-        btn2.addEventListener('click', function () {
-
-            if (btn1.classList.contains('green')) {
-                btn1.classList.remove('green');
-            }
-            this.classList.toggle('red');
-
-
-        });
-
-
-    </script>
-
-
-    <!-- Main Content -->
+    
     <main class="container">
         <div class="posts">
             {{ range . }}
             <div class="post-card">
                 <div class="post-header" registerErr>
-                    <form action="">
-                        <button class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
-                        <button class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
-
-
-                    </form>
-
-
+                   
                     <span class="user-id">{{ .Post_id }}</span>
 
                     <span class="username">{{ .Username }}</span>
@@ -76,15 +62,27 @@
                     <span class="post-date">{{ .CreatedAt }}</span>
                     <span class="Contetnt">
                         <h1>{{ .Content }}</h1>
+                        <h2><p>Categori : </p>{{.Status }}</h2>
                     </span>
 
                     {{ range .Commenters }}
                     <span> {{.}}</span>
                     {{end }}
+                    <span>
+                        <form action="/likedislike" method="GET">
+                                                    <input type="hidden" name="post_id" value="{{ .Post_id }}">
+                        <button  value="true" name="likedislike" class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
+                        <button  value="false"  name= "likedislike" class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+                        <input type="text" name="" id="" value="{{.LikeDislike }}">
+                        </form>
+
+                    </span>
+                    
                 </div>
 
                 <div class="comment-section">
 
+                    
                     <form action="/comment" method="GET">
                         <label for="comment">Commenter:</label>
                         <input type="hidden" name="post_id" value="{{ .Post_id }}">
@@ -240,27 +238,5 @@
 
     .comment-section input[type="submit"]:hover {
         background-color: #0d8ddb;
-    }
-
-
-
-
-    button {
-        cursor: pointer;
-        outline: 0;
-        color: #AAA;
-
-    }
-
-    .btn:focus {
-        outline: none;
-    }
-
-    .green {
-        color: green;
-    }
-
-    .red {
-        color: red;
     }
 </style>

@@ -21,6 +21,8 @@ func main() {
 	http.HandleFunc("/creatpost", handlers.CreatePostHandler)
 	http.HandleFunc("/comment", handlers.CommentHandler)
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
+	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
+
 
 	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
 	//	http.HandleFunc("/comment", handlers.CommentHandler)

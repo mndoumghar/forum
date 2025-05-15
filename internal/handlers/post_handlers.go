@@ -19,11 +19,14 @@ type Post struct {
 }
 
 type PostWithUser struct {
-	Post_id    string
-	Username   string
-	Content    string
-	CreatedAt  string
-	Commenters []DataComment
+	Post_id     string
+	Username    string
+	Content     string
+	CreatedAt   string
+	Commenters  []DataComment
+	Status      string
+	LikeDislike string
+	Bool int
 }
 
 //	type Comments struct {
@@ -45,7 +48,8 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		SELECT 
 			p.post_id, 
 			u.username, 
-			p.content, 
+			p.content,
+			p.status, 
 			p.created_at 
 		FROM 
 			posts p
@@ -53,7 +57,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			users u ON p.user_id = u.user_id
 	`)
 	if err != nil {
-		log.Printf("Error querying database: %v", err)
+		log.Printf("Error querying databa  se: %v", err)
 		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
 		return
 	}
@@ -63,7 +67,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var p PostWithUser
-		err = rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.CreatedAt)
+		err = rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.Status, &p.CreatedAt)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			continue
@@ -71,12 +75,11 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
 		if err != nil {
-			log.Printf("Error querying comments: %v", err)
+			log.Printf("Error Content: erying comments: %v", err)
 			http.Error(w, "Error fetching comments", http.StatusInternalServerError)
 			return
 		}
 		defer rows2.Close()
-
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
@@ -91,6 +94,23 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		if err = rows2.Err(); err != nil {
 			log.Printf("Error iterating comments: %v", err)
 		}
+
+		/*
+		   CREATE TABLE IF NOT EXISTS likedislike (
+
+		   		likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		   		post_id INTEGER NOT NULL,
+		   		user_id INTEGER NOT NULL,
+		   		likedislike  BOOLEAN NOT NULL,
+		   		FOREIGN KEY (post_id) REFERENCES posts(post_id),
+		   		FOREIGN KEY (user_id) REFERENCES users(user_id)
+		   	);
+		*/
+
+		 db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.LikeDislike)
+		fmt.Println(p.Post_id, " ", p.LikeDislike)
+
+		//////////////////////////////////////////////////
 
 		p.Commenters = comments
 		posts = append(posts, p)

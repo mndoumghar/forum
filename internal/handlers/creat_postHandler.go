@@ -15,6 +15,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
+	
 	// Handle GET request: Render the create post form
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/creat_post.html")

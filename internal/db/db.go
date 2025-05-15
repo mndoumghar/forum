@@ -51,6 +51,15 @@ func InitDB() error {
 			FOREIGN KEY (post_id) REFERENCES posts(post_id),
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
+		CREATE TABLE IF NOT EXISTS likedislike (
+    likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    likedislike TEXT CHECK (likedislike IN ('true', 'false')),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 		
 	`
 	_, err = DB.Exec(createTables)
