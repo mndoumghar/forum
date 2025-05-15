@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	
 	"net/http"
 
 	"forum/internal/db"
@@ -14,11 +15,12 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 
 		contentCommenter := r.FormValue("comment")
+
+		user_id := 1 // 
 		
-		// test user id and post id
-		user_id := 1  // session 
-		post_id := 7 // 
-		
+		// input Hiddent Send post_id In page Home
+		post_id := r.FormValue("post_id")
+
 		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
 		if err != nil {
 

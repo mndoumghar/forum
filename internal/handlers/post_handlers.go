@@ -61,17 +61,15 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var posts []PostWithUser
 
-	// Loop through posts
 	for rows.Next() {
 		var p PostWithUser
 		err = rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.CreatedAt)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
-			continue // Skip rows with errors
+			continue
 		}
-		fmt.Println(p.Post_id,"&&&&")
+		fmt.Println(p.Post_id, "&&&&")
 
-		// Fetch comments for this post
 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
@@ -94,7 +92,6 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error iterating comments: %v", err)
 		}
 
-		// Assign comments to the post
 		p.Commenters = comments
 		posts = append(posts, p)
 	}
@@ -103,7 +100,6 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error iterating posts: %v", err)
 	}
 
-	// Render the template
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)

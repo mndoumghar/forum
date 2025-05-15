@@ -7,7 +7,6 @@ import (
 	"forum/internal/db"
 	"forum/internal/models"
 	"forum/internal/utils"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -34,6 +33,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Definier Variable
+
 	email := r.FormValue("email")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
@@ -47,6 +47,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		// http.Error(w, "Email already taken", http.StatusBadRequest)
 		// return
 	}
+	
 	//    transfer passwordd to Hash password
 	hashedPw, err := utils.HashPassword(password)
 	if err != nil {

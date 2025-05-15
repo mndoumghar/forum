@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Forum</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
     <header class="navbar">
         <div class="logo">
@@ -24,23 +26,26 @@
         <div class="posts">
             {{ range . }}
             <div class="post-card">
-                <div class="post-header"registerErr>
+                <div class="post-header" registerErr>
+
                     <span class="user-id">{{ .Post_id }}</span>
-                    <pre>{{ .Commenters }}</pre>
+
                     <span class="username">{{ .Username }}</span>
+
                     <span class="post-date">{{ .CreatedAt }}</span>
+
+                    <span>{{ .Commenters }}</span>
                 </div>
-                <div class="post-content">
-                    <p>{{ .Content }}</p>
-                </div>
+               
                 <div class="comment-section">
-                <form action="/comment" method="GET">
+
+                    <form action="/comment" method="GET">
                         <label for="comment">Commenter:</label>
                         <input type="hidden" name="post_id" value="{{ .Post_id }}">
-                       
+
                         <input type="text" name="comment" id="comment" required>
-                        inp
-                        <input type="submit" name=""  value="Submit Comment">
+
+                        <input type="submit" value="Submit Comment">
                     </form>
                 </div>
             </div>
@@ -48,145 +53,145 @@
         </div>
     </main>
 </body>
+
 </html>
 <style>
     /* Reset default styles */
 
 
-body {
-    background-image: linear-gradient(rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.5) 50%), url('./static/banner6.jpg');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: #f4f4f4;
-    line-height: 1.6;
-}
+    body {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5) 50%), url('./static/banner6.jpg');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        color: #f4f4f4;
+        line-height: 1.6;
+    }
 
-/* Navbar Styles */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #24292e;
-    padding: 15px 25px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+    /* Navbar Styles */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #24292e;
+        padding: 15px 25px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-.logo a {
-    font-size: 26px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-}
+    .logo a {
+        font-size: 26px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+    }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+    }
 
-nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 5px 12px;
-    border-radius: 5px;
-    transition: all 0.3s;
-}
+    nav ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 5px 12px;
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
 
-nav ul li a:hover {
-    background-color: #1da1f2;
-    color: #fff;
-}
+    nav ul li a:hover {
+        background-color: #1da1f2;
+        color: #fff;
+    }
 
-/* Main Container */
-.container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 15px;
-}
+    /* Main Container */
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
 
-/* Posts Cards */
-.posts {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
+    /* Posts Cards */
+    .posts {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
 
-.post-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-}
+    .post-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
 
-.post-card:hover {
-    transform: translateY(-5px);
-}
+    .post-card:hover {
+        transform: translateY(-5px);
+    }
 
-.post-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #606770;
-    margin-bottom: 15px;
-}
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #606770;
+        margin-bottom: 15px;
+    }
 
-.username {
-    font-weight: bold;
-    color: #1c1e21;
-}
+    .username {
+        font-weight: bold;
+        color: #1c1e21;
+    }
 
-.post-date {
-    color: #606770;
-}
+    .post-date {
+        color: #606770;
+    }
 
-.post-content {
-    font-size: 16px;
-    line-height: 1.6;
-}
+    .post-content {
+        font-size: 16px;
+        line-height: 1.6;
+    }
 
-.post-content p {
-    margin: 0;
-}
+    .post-content p {
+        margin: 0;
+    }
 
-.comment-section {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+    .comment-section {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-.comment-section label {
-    font-size: 14px;
-    color: #333;
-}
+    .comment-section label {
+        font-size: 14px;
+        color: #333;
+    }
 
-.comment-section input[type="text"] {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 100%;
-    max-width: 400px;
-}
+    .comment-section input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 100%;
+        max-width: 400px;
+    }
 
-.comment-section input[type="submit"] {
-    padding: 10px 20px;
-    border: none;
-    background-color: #1da1f2;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    .comment-section input[type="submit"] {
+        padding: 10px 20px;
+        border: none;
+        background-color: #1da1f2;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-.comment-section input[type="submit"]:hover {
-    background-color: #0d8ddb;
-}
-
+    .comment-section input[type="submit"]:hover {
+        background-color: #0d8ddb;
+    }
 </style>
