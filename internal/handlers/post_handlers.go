@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -68,7 +67,6 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error scanning row: %v", err)
 			continue
 		}
-		fmt.Println(p.Post_id, "&&&&")
 
 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
 		if err != nil {

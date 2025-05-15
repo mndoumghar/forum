@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -25,7 +26,7 @@ func InitDB() error {
 		);
 
 		CREATE TABLE IF NOT EXISTS sessions (
-			session_id TEXT PRIMARY KEY,
+			uuid  TEXT  PRIMARY KEY,
 			user_id INTEGER NOT NULL,
 			expires_at TIMESTAMP NOT NULL,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
@@ -36,6 +37,7 @@ func InitDB() error {
 			user_id INTEGER NOT NULL,
 			title TEXT NOT NULL,
 			content TEXT NOT NULL,
+			status TEXT NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);

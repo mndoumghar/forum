@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"text/template"
 
@@ -40,12 +41,11 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Temporary user ID (replace with actual session-based user ID)
-		userID := 2 // Replace with session logic to get authenticated user ID
-		title := "Firs ID"
 		status := r.FormValue("status")
+		fmt.Println(status)
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content, title,st) VALUES (?, ?, ?, ?)", userID, content, title,status)
+		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES (?, ?, ?)", 1, content, status)
 		if err != nil {
 			http.Error(w, "Failed to create post", http.StatusInternalServerError)
 			return

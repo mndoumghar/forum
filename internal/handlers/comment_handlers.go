@@ -16,9 +16,9 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		contentCommenter := r.FormValue("comment")
 
-		user_id := 1 // 
+		user_id := 1 // Session Golang
 		
-		// input Hiddent Send post_id In page Home
+		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
 
 		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
