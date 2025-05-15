@@ -12,7 +12,7 @@ import (
 
 func CreateSession(w http.ResponseWriter, userID int) error {
 	sessionID, err := uuid.NewV4()
-	fmt.Println("UUid when Add Data base",sessionID)
+	fmt.Println("UUid when Add Data base", sessionID)
 	if err != nil {
 		return err
 	}
@@ -86,9 +86,9 @@ func DeletCoockies(w http.ResponseWriter, r *http.Request) error {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
 		Value:    "",
-		Path:     "/",        // Make sure this matches the Path used when setting the cookie
-		MaxAge:   -1,         // Instructs browser to delete the cookie
-		HttpOnly: true,       // Optional: helps prevent XSS
+		Path:     "/",  // Make sure this matches the Path used when setting the cookie
+		MaxAge:   -1,   // Instructs browser to delete the cookie
+		HttpOnly: true, // Optional: helps prevent XSS
 	})
 
 	return nil

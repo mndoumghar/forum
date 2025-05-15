@@ -9,11 +9,11 @@ import (
 
 func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
-	user_id, err := auth.CheckSession(w,r)
- if err != nil {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+	user_id, err := auth.CheckSession(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 
- }
+	}
 
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -23,7 +23,6 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		contentCommenter := r.FormValue("comment")
 
-		
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
 

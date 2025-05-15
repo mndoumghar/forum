@@ -26,7 +26,7 @@ type PostWithUser struct {
 	Commenters  []DataComment
 	Status      string
 	LikeDislike string
-	Bool int
+	Bool        int
 }
 
 //	type Comments struct {
@@ -107,7 +107,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		   	);
 		*/
 
-		 db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.LikeDislike)
+		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.LikeDislike)
 		fmt.Println(p.Post_id, " ", p.LikeDislike)
 
 		//////////////////////////////////////////////////

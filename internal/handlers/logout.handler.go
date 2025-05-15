@@ -7,17 +7,15 @@ import (
 
 func LogoutHabndler(w http.ResponseWriter, r *http.Request) {
 
-if r.Method != http.MethodGet {
+	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	err :=auth.DeletCoockies(w,r)
+	err := auth.DeletCoockies(w, r)
 	if err != nil {
-		return 
+		return
 	}
 
-	http.Redirect(w,r,"/login",http.StatusSeeOther)
-
-
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }

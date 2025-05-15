@@ -23,7 +23,6 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
 	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
 
-
 	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
 	//	http.HandleFunc("/comment", handlers.CommentHandler)
 	//	http.HandleFunc("/like", handlers.LikeHandler)
@@ -35,7 +34,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
 			//http.ServeFile(w, r, "static/index.html")
-			// Page Home 
+			// Page Home
 			http.Redirect(w, r, "/posts", http.StatusSeeOther)
 
 			return

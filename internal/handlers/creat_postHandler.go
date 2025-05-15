@@ -15,7 +15,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
-	
+
 	// Handle GET request: Render the create post form
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/creat_post.html")
@@ -47,16 +47,16 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		// }
 
 		// Temporary user ID (replace with actual session-based user ID)
-		// kayna form wkayna Form L3adiya 
+		// kayna form wkayna Form L3adiya
 		// 3lach khddmt b lform Bach njbd Ga3 l values Li Fihom same Name f input chechbox f Html
-		// W r.form['status'] Kaththoum F slice  
-		// ama formValues katkhd ghir valus li drty lih CheckBox f html 
-		// hna bghina Ka3 element Dyal Categorie 
+		// W r.form['status'] Kaththoum F slice
+		// ama formValues katkhd ghir valus li drty lih CheckBox f html
+		// hna bghina Ka3 element Dyal Categorie
 
 		status := r.Form["status"]
-		// hna Hwlt Slice l String Hint Maymknch Tsift l DAta base Slice f Vazlues khaso ikon string li howa TEXT Aw varchar nvarchr hado likaynin f database 
-		// 
-		statusStr := strings.Join(status," ")
+		// hna Hwlt Slice l String Hint Maymknch Tsift l DAta base Slice f Vazlues khaso ikon string li howa TEXT Aw varchar nvarchr hado likaynin f database
+		//
+		statusStr := strings.Join(status, " ")
 		fmt.Println(status)
 
 		content := r.FormValue("content")

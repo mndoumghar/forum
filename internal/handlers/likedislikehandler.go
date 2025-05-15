@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	
+	"fmt"
 	"net/http"
 
 	"forum/internal/auth"
@@ -36,13 +36,20 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
 
-		_, err := db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
+		// Checxk FRom Databnase How much line
+
+		u, err := db.GetLikeDisle(user_id)
+		if err != nil {
+			return
+		}
+		fmt.Println(u.Count, "###")
+
+		_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
 		if err != nil {
 
 			http.Error(w, "Like Or Dislike  failed", http.StatusInternalServerError)
 			return
 		}
-		
 
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 
