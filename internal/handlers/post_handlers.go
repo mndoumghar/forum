@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -81,6 +82,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			var c DataComment
 			err = rows2.Scan(&c.Contentcomment)
 			if err != nil {
+				fmt.Println(comments)
 				log.Printf("Error scanning comment: %v", err)
 				continue
 			}

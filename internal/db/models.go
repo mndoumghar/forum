@@ -20,6 +20,8 @@ type Post struct {
 	CreatedAt time.Time
 }
 
+
+
 func GetUserByEmail(email string) (*User, error) {
 	var u User
 	err := DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users WHERE email = ?", email).

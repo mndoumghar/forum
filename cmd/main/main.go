@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/posts", handlers.PostsHandler)
 	http.HandleFunc("/creatpost", handlers.CreatePostHandler)
 	http.HandleFunc("/comment", handlers.CommentHandler)
+	http.HandleFunc("/logout", handlers.LogoutHabndler)
 
 	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
 	//	http.HandleFunc("/comment", handlers.CommentHandler)
@@ -31,7 +32,10 @@ func main() {
 	// Add a root handler to serve index.html
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
-			http.ServeFile(w, r, "static/index.html")
+			//http.ServeFile(w, r, "static/index.html")
+			// Page Home 
+			http.Redirect(w, r, "/posts", http.StatusSeeOther)
+
 			return
 		}
 

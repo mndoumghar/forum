@@ -1,13 +1,20 @@
 package handlers
 
 import (
-	
 	"net/http"
 
+	"forum/internal/auth"
 	"forum/internal/db"
 )
 
 func CommentHandler(w http.ResponseWriter, r *http.Request) {
+
+	user_id, err := auth.CheckSession(w,r)
+ if err != nil {{{  }}
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+
+ }
+
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -16,7 +23,6 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		contentCommenter := r.FormValue("comment")
 
-		user_id := 1 // Session Golang
 		
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")

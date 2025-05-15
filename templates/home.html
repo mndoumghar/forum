@@ -15,7 +15,9 @@
         </div>
         <nav>
             <ul>
+                
                 <li><a href="/logout">Log Out</a></li>
+                
                 <li><a href="/creatpost">Create Post</a></li>
             </ul>
         </nav>
@@ -35,7 +37,9 @@
                     <span class="post-date">{{ .CreatedAt }}</span>
                     <span class="Contetnt"> <h1>{{ .Content }}</h1></span>
 
-                    <span>{{ .Commenters }}</span>
+                   {{ range  .Commenters }}
+                    <span>  {{.}}</span>
+                    {{end }}
                 </div>
                
                 <div class="comment-section">
@@ -61,6 +65,7 @@
 
 
     body {
+        display: inline;
         background-image: linear-gradient(rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5) 50%), url('./static/banner6.jpg');
         background-position: center;
         background-size: cover;

@@ -1,12 +1,15 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"text/template"
 
+	"forum/internal/auth"
 	"forum/internal/db"
 	"forum/internal/models"
 	"forum/internal/utils"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -47,7 +50,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		// http.Error(w, "Email already taken", http.StatusBadRequest)
 		// return
 	}
-	
+
 	//    transfer passwordd to Hash password
 	hashedPw, err := utils.HashPassword(password)
 	if err != nil {
@@ -71,7 +74,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // Login Page if Exist Your Information
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
 	// Declar Struct Type Error From CSS
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
@@ -127,6 +129,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		tmpl.Execute(w, Data.ErrorColor[0])
 		return
+	}
+	// Creat  Session And Session Starting ..
+	// THis is Session To stock a Value  --uuid
+	err = auth.CreateSession(w, user.ID)
+	if err != nil {
+		/// Erro If Not Data Session Noty Working
+		fmt.Println("Error Session Is Not Staritng")
 	}
 
 	// Header Page "Home.html"

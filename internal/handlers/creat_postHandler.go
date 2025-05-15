@@ -1,14 +1,20 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"text/template"
 
+	"forum/internal/auth"
 	"forum/internal/db"
 )
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+	
+user_id, err := auth.CheckSession(w,r)
+ if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+
+ }
 	// Handle GET request: Render the create post form
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/creat_post.html")
@@ -43,10 +49,13 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		status := r.FormValue("status")
 		content := r.FormValue("content")
 
-		fmt.Println(status)
+
+		
+		// in this Fucnction Chech If Session was Exist If Existed THen Save Your User_Id 
+
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)",1, content, status)
+		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)",user_id, content, status)
 		if err != nil {
 			http.Error(w, "Failed to create postss", http.StatusInternalServerError)
 			return
