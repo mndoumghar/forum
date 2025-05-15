@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"forum/internal/auth"
@@ -9,12 +11,10 @@ import (
 )
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
-	
-user_id, err := auth.CheckSession(w,r)
- if err != nil {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-
- }
+	user_id, err := auth.CheckSession(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
 	// Handle GET request: Render the create post form
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/creat_post.html")
@@ -46,16 +46,24 @@ user_id, err := auth.CheckSession(w,r)
 		// }
 
 		// Temporary user ID (replace with actual session-based user ID)
-		status := r.FormValue("status")
+		// kayna form wkayna Form L3adiya 
+		// 3lach khddmt b lform Bach njbd Ga3 l values Li Fihom same Name f input chechbox f Html
+		// W r.form['status'] Kaththoum F slice  
+		// ama formValues katkhd ghir valus li drty lih CheckBox f html 
+		// hna bghina Ka3 element Dyal Categorie 
+
+		status := r.Form["status"]
+		// hna Hwlt Slice l String Hint Maymknch Tsift l DAta base Slice f Vazlues khaso ikon string li howa TEXT Aw varchar nvarchr hado likaynin f database 
+		// 
+		statusStr := strings.Join(status," ")
+		fmt.Println(status)
+
 		content := r.FormValue("content")
 
-
-		
-		// in this Fucnction Chech If Session was Exist If Existed THen Save Your User_Id 
-
+		// in this Fucnction Chech If Session was Exist If Existed THen Save Your User_Id
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)",user_id, content, status)
+		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)", user_id, content, statusStr)
 		if err != nil {
 			http.Error(w, "Failed to create postss", http.StatusInternalServerError)
 			return
