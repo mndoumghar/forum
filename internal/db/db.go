@@ -35,9 +35,9 @@ func InitDB() error {
 		CREATE TABLE IF NOT EXISTS posts (
 			post_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
-			title TEXT NOT NULL,
-			content TEXT NOT NULL,
-			status TEXT NOT NULL,
+			title TEXT,
+			content TEXT,
+			status TEXT,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);

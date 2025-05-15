@@ -34,20 +34,21 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		content := r.FormValue("content")
-		if content == "" {
-			http.Error(w, "Content cannot be empty", http.StatusBadRequest)
-			return
-		}
+		// if content == "" {
+		// 	http.Error(w, "Content cannot be empty", http.StatusBadRequest)
+		// 	return
+		// }
 
 		// Temporary user ID (replace with actual session-based user ID)
 		status := r.FormValue("status")
+		content := r.FormValue("content")
+
 		fmt.Println(status)
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES (?, ?, ?)", 1, content, status)
+		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)",1, content, status)
 		if err != nil {
-			http.Error(w, "Failed to create post", http.StatusInternalServerError)
+			http.Error(w, "Failed to create postss", http.StatusInternalServerError)
 			return
 		}
 
