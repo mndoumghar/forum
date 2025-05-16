@@ -7,8 +7,6 @@
     <title>Home - Forum</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://use.fontawesome.com/fe459689b4.js"></script>
-
-
 </head>
 
 <body>
@@ -17,23 +15,17 @@
             cursor: pointer;
             outline: 0;
             color: #AAA;
-
         }
-    
-
         .btn:focus {
             outline: none;
         }
-
         #green {
             color: green;
         }
-
         #red {
             color: red;
         }
     </style>
-
 
     <header class="navbar">
         <div class="logo">
@@ -41,10 +33,10 @@
         </div>
         <nav>
             <ul>
-
                 <li><a href="/logout">Log Out</a></li>
-
-                <li><a href="/creatpost">Create Post</a></li>
+                <li>
+                  <button id="openModalBtn" type="button">Create Post</button>
+                </li>
             </ul>
         </nav>
     </header>
@@ -54,41 +46,30 @@
             {{ range . }}
             <div class="post-card">
                 <div class="post-header" registerErr>
-                   
                     <span class="user-id">{{ .Post_id }}</span>
-
                     <span class="username">{{ .Username }}</span>
-
                     <span class="post-date">{{ .CreatedAt }}</span>
                     <span class="Contetnt">
                         <h1>{{ .Content }}</h1>
                         <h2><p>Categori : </p>{{.Status }}</h2>
                     </span>
-
                     {{ range .Commenters }}
                     <span> {{.}}</span>
                     {{end }}
                     <span>
                         <form action="/likedislike" method="GET">
-                                                    <input type="hidden" name="post_id" value="{{ .Post_id }}">
-                        <button  value="true" name="likedislike" class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
-                        <button  value="false"  name= "likedislike" class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
-                        <input type="text" name="" id="" value="{{.LikeDislike }}">
+                            <input type="hidden" name="post_id" value="{{ .Post_id }}">
+                            <button  value="true" name="likedislike" class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
+                            <button  value="false"  name= "likedislike" class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+                            <input type="text" name="" id="" value="{{.LikeDislike }}">
                         </form>
-
                     </span>
-                    
                 </div>
-
                 <div class="comment-section">
-
-                    
                     <form action="/comment" method="GET">
                         <label for="comment">Commenter:</label>
                         <input type="hidden" name="post_id" value="{{ .Post_id }}">
-
                         <input type="text" name="comment" id="comment" required>
-
                         <input type="submit" value="Submit Comment">
                     </form>
                 </div>
@@ -96,13 +77,47 @@
             {{ end }}
         </div>
     </main>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2 id="creatpost-title" style="text-align: center;">Share Your Thoughts</h2>
+        <form class="create-post-form" action="/creatpost" method="post">
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title" required>
+          <label for="content">Content:</label>
+          <textarea id="content" name="content" rows="6" required></textarea>
+          <label for="category">Category:</label>
+          <select id="category" name="status" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="Sport">Sport</option>
+            <option value="Academy">Academy</option>
+            <option value="Developer">Developer</option>
+          </select>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+    document.getElementById('openModalBtn').onclick = function() {
+        document.getElementById('createPostModal').style.display = 'flex';
+    };
+    document.getElementById('closeModalBtn').onclick = function() {
+        document.getElementById('createPostModal').style.display = 'none';
+    };
+    window.onclick = function(event) {
+        let modal = document.getElementById('createPostModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+    </script>
 </body>
 
 </html>
 <style>
-    /* Reset default styles */
-
-
     body {
         display: inline;
         background-image: linear-gradient(rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5) 50%), url('./static/banner6.jpg');
@@ -112,7 +127,6 @@
         color: #f4f4f4;
         line-height: 1.6;
     }
-
     /* Navbar Styles */
     .navbar {
         display: flex;
@@ -125,48 +139,51 @@
         z-index: 100;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
-
     .logo a {
         font-size: 26px;
         color: #fff;
         text-decoration: none;
         font-weight: bold;
     }
-
     nav ul {
         list-style: none;
         display: flex;
         gap: 20px;
     }
-
-    nav ul li a {
+    nav ul li a, nav ul li button {
         color: #ffffff;
+        background: none;
+        border: none;
         text-decoration: none;
         font-size: 16px;
         padding: 5px 12px;
         border-radius: 5px;
         transition: all 0.3s;
     }
-
-    nav ul li a:hover {
+    nav ul li a:hover,
+    nav ul li button:hover {
         background-color: #1da1f2;
         color: #fff;
     }
-
-    /* Main Container */
     .container {
         max-width: 900px;
         margin: 20px auto;
         padding: 0 15px;
     }
 
-    /* Posts Cards */
+    #creatpost-title {
+        color: #000000ee;
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+        font-family: 'Grandstander', cursive, 'Comic Sans MS', 'Arial', sans-serif;
+    }
     .posts {
         display: flex;
         flex-direction: column;
         gap: 25px;
     }
-
     .post-card {
         background-color: #ffffff;
         border-radius: 8px;
@@ -174,11 +191,9 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease-in-out;
     }
-
     .post-card:hover {
         transform: translateY(-5px);
     }
-
     .post-header {
         display: flex;
         justify-content: space-between;
@@ -186,37 +201,30 @@
         color: #606770;
         margin-bottom: 15px;
     }
-
     .username {
         font-weight: bold;
         color: #1c1e21;
     }
-
     .post-date {
         color: #606770;
     }
-
     .post-content {
         font-size: 16px;
         line-height: 1.6;
     }
-
     .post-content p {
         margin: 0;
     }
-
     .comment-section {
         margin-top: 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
-
     .comment-section label {
         font-size: 14px;
         color: #333;
     }
-
     .comment-section input[type="text"] {
         padding: 8px;
         border: 1px solid #ddd;
@@ -225,7 +233,6 @@
         width: 100%;
         max-width: 400px;
     }
-
     .comment-section input[type="submit"] {
         padding: 10px 20px;
         border: none;
@@ -235,8 +242,78 @@
         cursor: pointer;
         transition: background-color 0.3s;
     }
-
     .comment-section input[type="submit"]:hover {
         background-color: #0d8ddb;
+    }
+
+    /* --- Modal styles --- */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 99;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        background-color: rgba(255,255,255,0.25); /* Even more transparent */
+        backdrop-filter: blur(10px); /* glass effect */
+        padding: 24px 20px 16px 20px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+        position: relative;
+        z-index: 100;
+        transition: box-shadow 0.2s;
+    }
+    .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px; right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover, .close:focus {
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .create-post-form input[type="text"],
+    .create-post-form textarea, 
+    .create-post-form select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+        background: rgba(255,255,255,0.7);
+        resize: vertical;
+        box-sizing: border-box;
+    }
+    .create-post-form button {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 4px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .create-post-form button:hover {
+        background: #0056b3;
+    }
+    .create-post-form {
+        display: grid;
+        gap: 10px;
+        padding: 30px 0 0 0;
     }
 </style>

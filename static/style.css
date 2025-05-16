@@ -64,15 +64,15 @@ background: rgba(255, 255, 255, 0.7); /* Slightly transparent white */
     font-size: 1.5em;
     color: #333;
 }
-
 .create-post-form label {
     display: block;
     margin-bottom: 6px;
-    font-weight: 500;
-    color: #444;
+    font-weight: bold;
+    color: #0f0f0fd0;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-    /* the text input CONTAINER */
+/* the text input CONTAINER */
 .create-post-form input[type="text"],
 .create-post-form textarea {
     width: 100%;
