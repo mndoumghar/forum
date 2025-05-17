@@ -46,7 +46,9 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return
 		}
-		
+
+
+
 		
 
 		if u.Count > 0 {
@@ -54,7 +56,15 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
-		} else {
+		}
+		if u.Count == 0 {
+
+			err = db.UpdateLikeDislike(user_id,post_id,likedislike)
+			if err != nil {
+				return
+			}
+		}
+
 			_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
 			if err != nil {
 
@@ -62,7 +72,7 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-		}
+		
 
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 

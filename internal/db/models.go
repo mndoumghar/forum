@@ -71,7 +71,29 @@ func CountLikeEveryPost(post_id string) (*User, error) {
 // exmple mli kandght f form 3la like or Dislke  browser kol mra kaystocki true or false Ftable like  dislike Whna Bghina ghir mra whda Istock value Dyalo
 // ila wrkana 3awtani 3la buton like Katcheck Ila deja m stock fih true or false kayremove mn jdid ...
 
+
+func UpdateLikeDislike(user_id int, post_id string , Like string) error {
+	if Like == "true" {
+		_,err:= DB.Exec("UPDATE likedislike set likedislike == 'false'  WHERE user_id = ? AND post_id = ? ", Like,user_id, post_id)
+		if err != nil {
+			return err
+		}
+	}
+	if Like == "false" {
+		_,err:= DB.Exec("UPDATE likedislike set likedislike == 'true'  WHERE user_id = ? AND post_id = ? ", Like,user_id, post_id)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+
+}
+
+
 func DeleteIdUserikeDislike(user_id int, post_id string) error {
+
+	
+
 
 	_, err := DB.Exec("DELETE FROM likedislike WHERE user_id = ? AND post_id = ?", user_id,post_id)
 	if err != nil {

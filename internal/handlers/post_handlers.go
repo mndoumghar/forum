@@ -27,9 +27,11 @@ type PostWithUser struct {
 	Commenters  []DataComment
 	Status      string
 	LikeDislike string
-	Bool        int
-	// How much Like_Dislike Evrey posts
-	CountUserlike int
+
+	Bool int
+	// How much Like_Dislike Evrey posts like ANd Dislike
+	CountUserlike    int
+	CountUserDislike int
 }
 
 //	type Comments struct {
@@ -41,9 +43,7 @@ type DataComment struct {
 }
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
-
 	user_id, _ := auth.CheckSession(w, r)
-	
 
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -104,24 +104,27 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		/*
-		   CREATE TABLE IF NOT EXISTS likedislike (
-
-		   		likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		   		post_id INTEGER NOT NULL,
-		   		user_id INTEGER NOT NULL,
-		   		likedislike  BOOLEAN NOT NULL,
-		   		FOREIGN KEY (post_id) REFERENCES posts(post_id),
-		   		FOREIGN KEY (user_id) REFERENCES users(user_id)
-		   	);
+				CREATE TABLE IF NOT EXISTS likedislike (
+			    likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			    post_id INTEGER NOT NULL,
+			    user_id INTEGER NOT NULL,
+			      TEXT CHECK (likedislike IN ('true', 'false')),
+			    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+			    FOREIGN KEY (user_id) REFERENCES users(user_id)
+			);
 		*/
 
 		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
 		fmt.Println(p.Post_id, " ", p.LikeDislike)
 
-		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.CountUserlike)
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'true' ", p.Post_id).Scan(&p.CountUserlike)
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'false' ", p.Post_id).Scan(&p.CountUserDislike)
+
 
 		//////////////////////////////////////////////////
-		fmt.Println("post_id = ", p.Post_id, " count :  ", p.CountUserlike)
+		// Print Like AND Dislike every Post-id
+		
+		fmt.Println( " like :  ", p.CountUserlike, "  ____  Dislike : ", p.CountUserDislike)
 
 		p.Commenters = comments
 		posts = append(posts, p)

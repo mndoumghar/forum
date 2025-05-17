@@ -68,6 +68,9 @@
                             
                             {{.CountUserlike}}
                         </h1>
+                        <h1>
+                                {{ .CountUserDislike }}
+                        </h1>
 
                     </span>
                 </div>
@@ -89,7 +92,7 @@
       <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h2 id="creatpost-title" style="text-align: center;">Share Your Thoughts</h2>
-        <form class="create-post-form" action="/creatpost" method="post">
+        <form class="create-post-form" action="/creatpost" method="POST">
           <label for="title">Title:</label>
           <input type="text" id="title" name="title" required>
           <label for="content">Content:</label>
