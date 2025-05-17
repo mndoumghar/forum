@@ -20,18 +20,18 @@ type Post struct {
 }
 
 type PostWithUser struct {
-	Post_id  string
-	Username string
-	Title1    string
-	Content     string
-	CreatedAt   string
-	Commenters  []DataComment // Show All Commnter For Every Post
-	Status      string
-	LikeDislike string
-	Colorlike string
+	Post_id      string
+	Username     string
+	Title1       string
+	Content      string
+	CreatedAt    string
+	Commenters   []DataComment // Show All Commnter For Every Post
+	Status       string
+	LikeDislike  string
+	Colorlike    string
 	ColorDislike string
-	ColorValue int
-	Bool int
+	ColorValue   int
+	Bool         int
 	// How much Like_Dislike Evrey posts like ANd Dislike
 	CountUserlike    int
 	CountUserDislike int
@@ -118,8 +118,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'true' ", p.Post_id).Scan(&p.CountUserlike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'false' ", p.Post_id).Scan(&p.CountUserDislike)
-				db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  user_id = ? ",p.Post_id,user_id).Scan(&p.ColorValue)
-
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  user_id = ? ", p.Post_id, user_id).Scan(&p.ColorValue)
 
 		//////////////////////////////////////////////////
 		// Print Like AND Dislike every Post-id
@@ -127,11 +126,10 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" like :  ", p.CountUserlike, "  ____  Dislike : ", p.CountUserDislike, " Conter : ", p.LikeDislike)
 		if p.LikeDislike == "true" {
 			p.Colorlike = "blue"
-		} 
+		}
 		if p.LikeDislike == "false" {
 			p.Colorlike = "red"
-		} 
-		
+		}
 
 		p.Commenters = comments
 		posts = append(posts, p)
