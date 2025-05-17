@@ -60,17 +60,11 @@
                         <form action="/likedislike" method="GET">
 
                         <input type="hidden" name="post_id" value="{{ .Post_id }}">
-                        <button  value="true" name="likedislike" class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
-                        <button  value="false"  name= "likedislike" class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
-                        <input type="text" name="" id="" value="{{.LikeDislike }}">
+                        <button  value="true" name="likedislike" class="btn" id="green"  ><p>{{.CountUserlike}}</p> <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
+                        <button  value="false"  name= "likedislike" class="btn" id="red"><p>{{ .CountUserDislike }}</p><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+                        <input type="hidden"  name="" id="" value="{{.LikeDislike }}">
                         </form>
-                        <h1>
-                            
-                            {{.CountUserlike}}
-                        </h1>
-                        <h1>
-                                {{ .CountUserDislike }}
-                        </h1>
+                       
 
                     </span>
                 </div>
