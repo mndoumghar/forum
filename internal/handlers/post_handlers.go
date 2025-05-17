@@ -20,11 +20,12 @@ type Post struct {
 }
 
 type PostWithUser struct {
-	Post_id     string
-	Username    string
+	Post_id  string
+	Username string
+	Title1    string
 	Content     string
 	CreatedAt   string
-	Commenters  []DataComment
+	Commenters  []DataComment // Show All Commnter For Every Post
 	Status      string
 	LikeDislike string
 
@@ -34,10 +35,6 @@ type PostWithUser struct {
 	CountUserDislike int
 }
 
-//	type Comments struct {
-//		Comment_id int
-//		Content    string
-//	}
 type DataComment struct {
 	Contentcomment string
 }
@@ -115,16 +112,15 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		*/
 
 		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
-		fmt.Println(p.Post_id, " ", p.LikeDislike)
+		//fmt.Println(p.Title1)
 
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'true' ", p.Post_id).Scan(&p.CountUserlike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'false' ", p.Post_id).Scan(&p.CountUserDislike)
 
-
 		//////////////////////////////////////////////////
 		// Print Like AND Dislike every Post-id
-		
-		fmt.Println( " like :  ", p.CountUserlike, "  ____  Dislike : ", p.CountUserDislike)
+
+		fmt.Println(" like :  ", p.CountUserlike, "  ____  Dislike : ", p.CountUserDislike)
 
 		p.Commenters = comments
 		posts = append(posts, p)

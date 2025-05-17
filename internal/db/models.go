@@ -73,6 +73,7 @@ func CountLikeEveryPost(post_id string) (*User, error) {
 
 
 func UpdateLikeDislike(user_id int, post_id string , Like string) error {
+	
 	if Like == "true" {
 		_,err:= DB.Exec("UPDATE likedislike set likedislike == 'false'  WHERE user_id = ? AND post_id = ? ", Like,user_id, post_id)
 		if err != nil {

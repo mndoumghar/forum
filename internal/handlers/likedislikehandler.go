@@ -51,13 +51,13 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 
 		
 
-		if u.Count > 0 {
+		if u.Count >= 1 {
 			err = db.DeleteIdUserikeDislike(user_id, post_id)
 			if err != nil {
 				return
 			}
 		}
-		if u.Count == 0 {
+		if u.Count == 1 {
 
 			err = db.UpdateLikeDislike(user_id,post_id,likedislike)
 			if err != nil {
