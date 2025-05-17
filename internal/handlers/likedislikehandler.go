@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	
 	"net/http"
 
 	"forum/internal/auth"
@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS likedislike (
 		FOREIGN KEY (user_id) REFERENCES users(user_id)
 	);
 */
+
+type CountLikeAll struct {
+	Nums int
+}
+
 func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	user_id, err := auth.CheckSession(w, r)
 	if err != nil {
@@ -37,23 +42,31 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		post_id := r.FormValue("post_id")
 
 		// Checxk FRom Databnase How much line
-
-		u, err := db.GetLikeDisle(user_id)
+		u, err := db.GetLikeDisle(user_id, post_id)
 		if err != nil {
 			return
 		}
-		fmt.Println(u.Count, "###")
+		
+		
 
-		_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
-		if err != nil {
+		if u.Count > 0 {
+			err = db.DeleteIdUserikeDislike(user_id, post_id)
+			if err != nil {
+				return
+			}
+		} else {
+			_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
+			if err != nil {
 
-			http.Error(w, "Like Or Dislike  failed", http.StatusInternalServerError)
-			return
+				http.Error(w, "Like Or Dislike  failed", http.StatusInternalServerError)
+				return
+			}
+
 		}
 
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 
 		return
 	}
-	http.Redirect(w, r, "/posts", http.StatusSeeOther)
+	
 }

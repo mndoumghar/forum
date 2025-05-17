@@ -11,6 +11,7 @@ type User struct {
 	Password  string
 	CreatedAt time.Time
 	Count     int
+	CountAll int
 }
 
 type Post struct {
@@ -32,6 +33,7 @@ func GetUserByEmail(email string) (*User, error) {
 }
 
 func GetPost() (*Post, *User, error) {
+
 	var p Post
 	var u User
 	// Ensure you correct the column name `usernam` to `username`
@@ -43,14 +45,40 @@ func GetPost() (*Post, *User, error) {
 	return &p, &u, nil // Return the Post and User objects if no error
 }
 
-func GetLikeDisle(user_id int) (*User, error) {
+func GetLikeDisle(user_id int,post_id string) (*User, error) {
 	var u User
-	err := DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE user_id = ? ", user_id).
+	err := DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE user_id = ? AND post_id = ?", user_id,post_id).
 		Scan(&u.Count)
 	if err != nil {
 		return nil, err
 	}
 	return &u, nil
+}
+
+func CountLikeEveryPost(post_id string) (*User, error) {
+	var u User
+	err := DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?", post_id).Scan(&u.CountAll)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+
+
+
+// this function checki lina Ila Can 3ndna Ktr mn user_id F Table likeDislike katrimove Azero bdpt Fdak Id User 
+// exmple mli kandght f form 3la like or Dislke  browser kol mra kaystocki true or false Ftable like  dislike Whna Bghina ghir mra whda Istock value Dyalo
+// ila wrkana 3awtani 3la buton like Katcheck Ila deja m stock fih true or false kayremove mn jdid ...
+
+func DeleteIdUserikeDislike(user_id int, post_id string) error {
+
+	_, err := DB.Exec("DELETE FROM likedislike WHERE user_id = ? AND post_id = ?", user_id,post_id)
+	if err != nil {
+		return err
+	}
+	return err
+
 }
 
 /*

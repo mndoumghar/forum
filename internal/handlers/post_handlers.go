@@ -7,6 +7,7 @@ import (
 	"text/template"
 	"time"
 
+	"forum/internal/auth"
 	"forum/internal/db"
 )
 
@@ -27,6 +28,8 @@ type PostWithUser struct {
 	Status      string
 	LikeDislike string
 	Bool        int
+	// How much Like_Dislike Evrey posts
+	CountUserlike int
 }
 
 //	type Comments struct {
@@ -38,6 +41,10 @@ type DataComment struct {
 }
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
+
+	user_id, _ := auth.CheckSession(w, r)
+	
+
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -91,6 +98,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			comments = append(comments, c)
 		}
+
 		if err = rows2.Err(); err != nil {
 			log.Printf("Error iterating comments: %v", err)
 		}
@@ -107,10 +115,13 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		   	);
 		*/
 
-		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.LikeDislike)
+		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
 		fmt.Println(p.Post_id, " ", p.LikeDislike)
 
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?", p.Post_id).Scan(&p.CountUserlike)
+
 		//////////////////////////////////////////////////
+		fmt.Println("post_id = ", p.Post_id, " count :  ", p.CountUserlike)
 
 		p.Commenters = comments
 		posts = append(posts, p)
