@@ -31,19 +31,30 @@
         <div class="logo">
             <h1><a href="/posts">Forum</a></h1>
         </div>
+       
+
+        
         <nav>
             <ul>
-                <li><a href="/logout">Log Out</a></li>
-                <li>
-                  <button id="openModalBtn" type="button">Create Post</button>
-                </li>
+                <li><a href=""><li>{{ range .Posts }}{{ .UserProfil }} {{end}}</li></a></li>
+               {{ range .Posts }}{{ .Headerhtml }} {{end}}
+                
             </ul>
+
+            <ul>
+            {{if .Username}}
+            <a href="/logout">Log Out</a>
+            {{else}}
+            <a href="/login">Log In</a>
+            {{end}}
+            </ul>
+
         </nav>
     </header>
     
     <main class="container">
         <div class="posts">
-            {{ range . }}
+            {{ range .Posts }}
             <div class="post-card">
                 <div class="post-header" registerErr>
                     <span class="user-id">{{ .Post_id }}</span>
@@ -53,9 +64,7 @@
                         <h1>{{ .Content }}</h1>
                         <h2><p>Categori : </p>{{.Status }}</h2>
                     </span>
-                    {{ range .Commenters }}
-                    <span> {{.}}</span>
-                    {{end }}
+                    <span> {{.Commenters}}</span>
                     <span>
                         <form action="/likedislike" method="GET">
 

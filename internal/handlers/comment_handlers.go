@@ -10,6 +10,8 @@ import (
 func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	user_id, err := auth.CheckSession(w, r)
+
+
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 
