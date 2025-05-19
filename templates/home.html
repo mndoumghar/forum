@@ -10,8 +10,23 @@
 </head>
 
 <body>
+    <!-- Animated video background -->
+    <video autoplay muted loop id="bg-video">
+      <source src="/static/animated.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
     <style>
-       button {
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        button {
             cursor: pointer;
             outline: 0;
             color: #AAA;
@@ -58,14 +73,11 @@
                     {{end }}
                     <span>
                         <form action="/likedislike" method="GET">
-
                         <input type="hidden" name="post_id" value="{{ .Post_id }}">
                         <button  value="true" name="likedislike" class="btn" id="green"  ><p>{{.CountUserlike}}</p> <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
                         <button  value="false"  name= "likedislike" class="btn" id="red"><p>{{ .CountUserDislike }}</p><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
                         <input type="hidden"  name="" id="" value="{{.LikeDislike }}">
                         </form>
-                       
-
                     </span>
                 </div>
                 <div class="comment-section">
@@ -123,10 +135,8 @@
 <style>
     body {
         display: inline;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5) 50%), url('./static/banner6.jpg');
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
+        /* background-image: linear-gradient(rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5) 50%), url('./static/banner6.jpg'); */
+        background: transparent !important;
         color: #f4f4f4;
         line-height: 1.6;
     }
@@ -135,12 +145,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #24292e;
+        background-color: #24292e56;
         padding: 15px 25px;
         position: sticky;
         top: 0;
         z-index: 100;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.76);
     }
     .logo a {
         font-size: 26px;
@@ -188,11 +198,14 @@
         gap: 25px;
     }
     .post-card {
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out;
+        background: rgba(255, 255, 255, 0.048); /* glass effect */
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 24px 20px 16px 20px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.18), 0 0 12px 2px #0e4c72;
+        transition: box-shadow 0.2s, transform 0.3s ease-in-out;
+        color: #222;
+        position: relative;
     }
     .post-card:hover {
         transform: translateY(-5px);
