@@ -1,5 +1,11 @@
 ## Tasks
 
+- [x] Oussama` ||` Create design **Urgent**:  
+    - Add in `postHandler` → struct `#PostWithUser#` → add `profile` string  
+    - Add design for user profile photo for every user who posted  
+    - Create page `Creat_post.html` and `creatPage_post.css`
+- [ ] Add profile picture page for every user with name template `{{.profile}}`
+- [ ] Add `profil` column (type `TEXT`) to `user` table in SQL
 - [ ] Design and implement CSS for comments, likes, and dislikes on `Home.html`. Add the CSS to the static files.
 - [ ] Create a function to collect all errors (e.g., as a struct slice) from the database and HTTP (such as internal server errors), and send every error to `Error.html`.
 
