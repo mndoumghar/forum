@@ -17,7 +17,7 @@ func InitDB() error {
 
 	// Create tables
 	createTables := `
-		CREATE TABLE IF NOT EXISTS users (
+			CREATE TABLE IF NOT EXISTS users (
 			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			email TEXT UNIQUE NOT NULL,
 			username TEXT NOT NULL,
@@ -59,6 +59,18 @@ func InitDB() error {
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+
+--CREATE TRIGGER  IF NOT EXISTS mohamed
+--BEFORE INSERT ON comments
+--FOR EACH ROW
+--BEGIN
+  --  SELECT
+   -- CASE
+     --   WHEN NEW.content LIKE '%<script>%' THEN
+       --     RAISE(ABORT, ' this is script')
+    --END;
+--END;
 
 		
 	`
