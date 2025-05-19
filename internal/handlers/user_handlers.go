@@ -21,76 +21,15 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			{Error: "", Color: ""},
 		},
 	}
-	if r.Method == http.MethodGet {
-		tmpl, err := template.Papackage functions
-
-import (
-	"net/http"
-)
-
-type GenereError struct {
-	StatusError int
-	Text        string
-}
-
-type GenereAllErro struct {
-	ArrayGeneration []GenereError
-}
-
-type SendErrorPageHtml struct {
-	StError int
-	Txt string
-} 
-
-func ErrorHandler(w http.ResponseWriter, statusErore int) {
-	Data := GenereAllErro{
-		ArrayGeneration: []GenereError{
-			{StatusError: 200, Text: "200 OK"},
-			{StatusError: 404, Text: "404 Not Found"},
-			{StatusError: 405, Text: "Method Not Allowed"},
-			{StatusError: 500, Text: "Internal Server Error"},
-			{StatusError: 400, Text: "Bad Request: Missing text or banner"},
-		},
-	}
-
-	DataError := SendErrorPageHtml{}
-
-
-	// Find the error message corresponding to the statusErore
-	var errorMessage string
-	for _, err := range Data.ArrayGeneration {
-		if err.StatusError == statusErore {
-			errorMessage = err.Text
-			DataError.StError = statusErore
-			DataError.Txt = err.Text
-			break
-		}
-	}
-
-	// If the error message is not found, default to "Internal Server Error"
-	if errorMessage == "" {
-		errorMessage = "Internal Server Error"
-		statusErore = http.StatusInternalServerError
-	}
-
-	// Set the HTTP status code
-	w.WriteHeader(statusErore)
-
-	// Execute the HTML template and pass the error message
-	err := templates.ExecuteTemplate(w, "Error.html", DataError)
+if r.Method == http.MethodGet {
+	tmpl, err := template.ParseFiles("templates/register.html")
 	if err != nil {
-		// If template execution fails, fallback to a plain text error
-		//http.Error(w, "Internal Server Error: Failed to render error page", http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-}rseFiles("templates/register.html")
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
-		tmpl.Execute(w, nil)
-		return
-	}
+	tmpl.Execute(w, nil)
+	return
+}
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

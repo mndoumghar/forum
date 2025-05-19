@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="/static/login.css">
+    <style>
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
+    <!-- Animated video background -->
+    <video autoplay muted loop id="bg-video">
+      <source src="/static/animated.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
 <div class="main">
     <div class="container">
-       
-
         <form action="/login" method="POST" class="login-form">
             <h1>Log In</h1>
             <div class="input-group">
@@ -35,13 +47,9 @@
                     <p style="color: {{ .Color }};">{{ .Error }}</p>
                 {{ end }}
                 </div>
-
-               
             </div>
         </form>
-       
     </div>
-    
 </div>
 
 </body>

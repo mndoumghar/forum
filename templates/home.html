@@ -26,19 +26,19 @@
             object-fit: cover;
             z-index: -1;
         }
-        button {
+        /* button {
             cursor: pointer;
             outline: 0;
             color: #AAA;
-        }
+        } */
         .btn:focus {
             outline: none;
         }
         #green {
-            color: green;
+            color: rgb(115, 87, 240);
         }
         #red {
-            color: red;
+            color: rgba(255, 0, 0, 0.575);
         }
     </style>
 
@@ -46,9 +46,6 @@
         <div class="logo">
             <h1><a href="/posts">Forum</a></h1>
         </div>
-       
-
-        
         <nav>
             <ul>
                 <li><a href=""><li>{{ range .Posts }}{{ .UserProfil }} {{end}}</li></a></li>
@@ -63,6 +60,11 @@
             <a href="/login">Log In</a>
             {{end}}
             </ul>
+            <li>
+                <button id="createPostBtn" class="btn" type="button">
+                    <i class="fa fa-plus"></i> Create Post
+                </button>
+            </li>
 
         </nav>
     </header>
@@ -73,7 +75,10 @@
             <div class="post-card">
                 <div class="post-header" registerErr>
                     <span class="user-id">{{ .Post_id }}</span>
+                    <span class="username-block">
                     <span class="username">{{ .Username }}</span>
+                    <img src="/static/defaultAV.png" alt="User Avatar" class="user-avatar">
+                    </span>
                     <span class="post-date">{{ .CreatedAt }}</span>
                     <span class="Contetnt">
                         <h1>{{ .Content }}</h1>
@@ -125,18 +130,59 @@
     </div>
 
     <script>
-    document.getElementById('openModalBtn').onclick = function() {
-        document.getElementById('createPostModal').style.display = 'flex';
-    };
-    document.getElementById('closeModalBtn').onclick = function() {
-        document.getElementById('createPostModal').style.display = 'none';
-    };
-    window.onclick = function(event) {
-        let modal = document.getElementById('createPostModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
+        // Modal open/close logic for Create Post
+        document.addEventListener('DOMContentLoaded', function() {
+            var createBtn = document.getElementById('createPostBtn');
+            var modal = document.getElementById('createPostModal');
+            var closeModalBtn = document.getElementById('closeModalBtn');
+
+            if (createBtn && modal) {
+                createBtn.onclick = function() {
+                    modal.style.display = 'flex';
+                };
+            }
+            if (closeModalBtn && modal) {
+                closeModalBtn.onclick = function() {
+                    modal.style.display = 'none';
+                };
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            // Style the logout button
+            var logoutBtn = document.querySelector('a[href="/logout"]');
+            if (logoutBtn) {
+                logoutBtn.style.background = 'rgba(255, 255, 255, 0.18)';
+                logoutBtn.style.color = '#7357f0';
+                logoutBtn.style.backdropFilter = 'blur(8px)';
+                logoutBtn.style.boxShadow = '0 4px 16px rgba(115,87,240,0.18)';
+                logoutBtn.style.border = '1px solid rgba(115,87,240,0.25)';
+                logoutBtn.style.borderRadius = '8px';
+            }
+            // Style the login button
+            var loginBtn = document.querySelector('a[href="/login"]');
+            if (loginBtn) {
+                loginBtn.style.background = 'rgba(255, 255, 255, 0.18)';
+                loginBtn.style.color = '#7357f0';
+                loginBtn.style.backdropFilter = 'blur(8px)';
+                loginBtn.style.boxShadow = '0 4px 16px rgba(115,87,240,0.18)';
+                loginBtn.style.border = '1px solid rgba(115,87,240,0.25)';
+                loginBtn.style.borderRadius = '8px';
+            }
+            // Change the color of the Create Post button
+            if (createBtn) {
+                createBtn.style.background = 'rgba(255, 255, 255, 0.18)'; // Transparent glass effect
+                createBtn.style.color = '#7357f0';
+                createBtn.style.backdropFilter = 'blur(8px)';
+                createBtn.style.boxShadow = '0 4px 16px rgba(115,87,240,0.18)';
+                createBtn.style.border = '1px solid rgba(115,87,240,0.25)';
+                createBtn.style.borderRadius = '8px'; // Add edges (rounded corners)
+            }
+        });
+
     </script>
 </body>
 
@@ -152,9 +198,11 @@
     /* Navbar Styles */
     .navbar {
         display: flex;
+        width: 100%;
+        height: 70px;
         justify-content: space-between;
         align-items: center;
-        background-color: #24292e56;
+        background-color: #24292ead;
         padding: 15px 25px;
         position: sticky;
         top: 0;
@@ -170,7 +218,8 @@
     nav ul {
         list-style: none;
         display: flex;
-        gap: 20px;
+        /* gap: 20px; */
+        margin: 0 5px;
     }
     nav ul li a, nav ul li button {
         color: #ffffff;
@@ -181,6 +230,7 @@
         padding: 5px 12px;
         border-radius: 5px;
         transition: all 0.3s;
+        margin: 50px 3px;
     }
     nav ul li a:hover,
     nav ul li button:hover {
@@ -230,6 +280,31 @@
         font-weight: bold;
         color: #1c1e21;
     }
+    .user-avatar-nav {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 7px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+        vertical-align: middle;
+    }
+    .username-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-top: 2px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+    }
     .post-date {
         color: #606770;
     }
@@ -257,6 +332,7 @@
         font-size: 14px;
         width: 100%;
         max-width: 400px;
+        margin-bottom: 10px; /* Add space below input */
     }
     .comment-section input[type="submit"] {
         padding: 10px 20px;

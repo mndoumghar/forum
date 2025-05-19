@@ -17,7 +17,7 @@ func main() {
 	// Register handlers All Function from Dossier Hanlres --->----
 	http.HandleFunc("/register", handlers.RegisterHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
-	http.HandleFunc("/home", handlers.PostsHandler)
+	http.HandleFunc("/posts", handlers.PostsHandler)
 	http.HandleFunc("/creatpost", handlers.CreatePostHandler)
 	http.HandleFunc("/comment", handlers.CommentHandler)
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
@@ -35,7 +35,7 @@ func main() {
 		if r.URL.Path == "/" {
 			//http.ServeFile(w, r, "static/index.html")
 			// Page Home
-			http.Redirect(w, r, "/home", http.StatusSeeOther)
+			http.Redirect(w, r, "/posts", http.StatusSeeOther)
 
 			return
 		}
