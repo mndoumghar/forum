@@ -51,8 +51,8 @@ type DataComment struct {
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
-	var html PostWithUser
-		var addUser PostWithUser
+	//var html PostWithUser
+	//	var addUser PostWithUser
 
 	user_id, _ := auth.CheckSession(w, r)
 	/* if errS != nil {
@@ -169,9 +169,9 @@ type Alldata struct {
 
 		posts = append(posts, p)
 	}
-	addUser.UserProfil = user.Usernameprofil
-	posts = append(posts, addUser)
-	posts = append(posts, html)
+	// addUser.UserProfil = user.Usernameprofil
+	// posts = append(posts, addUser)
+	//posts = append(posts, html)
 
 
 
@@ -195,6 +195,7 @@ data := Alldata{
 } 
 
 
+fmt.Println("Username : ",data.Username)
 
 	err = tmpl.Execute(w, data)
 	if err != nil {

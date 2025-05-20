@@ -46,19 +46,22 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// if likedislike!= "" {
+
+		// 		err = db.UpdateLikeDislike(user_id,post_id,likedislike)
+		// 		if err != nil {
+		// 			return
+		// 		}
+		// 	}
+
 		if u.Count > 0 {
 			err = db.DeleteIdUserikeDislike(user_id, post_id)
 			if err != nil {
 				return
 			}
 		} else {
-			// if u.Count == 1 {
 
-			// 	err = db.UpdateLikeDislike(user_id,post_id,likedislike)
-			// 	if err != nil {
-			// 		return
-			// 	}
-			// }
+			
 
 			_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
 			if err != nil {
