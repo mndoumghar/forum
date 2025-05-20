@@ -17,9 +17,8 @@
     </div>
     <nav class="nav-right">
         <!-- Create Post Button -->
-        <button id="createPostBtn" class="btn create-post-btn" type="button">
-            <i class="fa fa-plus"></i> Create Post
-        </button>
+   
+        
 
         <!-- User Profile Section -->
         <div class="user-section">
@@ -27,6 +26,9 @@
             <img src="/static/defaultAV.png" alt="Profile Picture" class="profile-img">
             {{if .Username}}
             <a href="/logout" class="logout-btn">Log Out</a>
+            <button id="createPostBtn" class="btn create-post-btn" type="button">
+            <i class="fa fa-plus"></i> Create Post
+        </button>
             {{else}}
             <a href="/login" class="login-btn">Log In</a>
             {{end}}
