@@ -25,6 +25,18 @@ func InitDB() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
 
+
+		CREATE TABLE IF NOT EXISTS category ( 
+			category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			post_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			status TEXT NOT NULL,
+			content TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (post_id) REFERENCES posts(post_id),
+			FOREIGN KEY (user_id) REFERENCES users(user_id)
+		);
+
 		CREATE TABLE IF NOT EXISTS sessions (
 			uuid  TEXT  PRIMARY KEY,
 			user_id INTEGER NOT NULL,

@@ -59,12 +59,13 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		statusStr := strings.Join(status, " ")
 		fmt.Println(status)
 
+		post_id := r.FormValue("post_id")
 		content := r.FormValue("content")
 
 		// in this Fucnction Chech If Session was Exist If Existed THen Save Your User_Id
 
 		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO posts(user_id, content,status) VALUES(?, ?, ?)", user_id, content, statusStr)
+		_, err = db.DB.Exec("INSERT INTO category(user_id, post_id, status, content) VALUES(?, ?, ? , ?)", user_id, post_id,statusStr, content)
 		if err != nil {
 			http.Error(w, "Failed to create postss", http.StatusInternalServerError)
 			return
