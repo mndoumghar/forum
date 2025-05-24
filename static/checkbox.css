@@ -1,0 +1,196 @@
+/* el-checkbox: Pure CSS Custom Checkbox, Radio, and Switch */
+
+/* Reset default styles */
+.el-checkbox input[type="checkbox"],
+.el-radio input[type="radio"] {
+  display: none;
+}
+
+/* Checkbox container */
+.el-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  user-select: none;
+}
+
+/* Common checkbox style */
+.el-checkbox-style {
+  display: inline-block;
+  position: relative;
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  border: 2px solid #bbb;
+  border-radius: 4px;
+  transition: border-color 0.2s, background 0.2s;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Checkbox checked style */
+.el-checkbox input[type="checkbox"]:checked + .el-checkbox-style {
+  background: #4caf50;
+  border-color: #4caf50;
+}
+
+.el-checkbox-style:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  opacity: 0;
+  transform: scale(0.8) rotate(45deg);
+  transition: opacity 0.2s;
+}
+
+.el-checkbox input[type="checkbox"]:checked + .el-checkbox-style:after {
+  opacity: 1;
+}
+
+/* Size modifiers */
+.el-checkbox-sm .el-checkbox-style {
+  width: 16px;
+  height: 16px;
+}
+
+.el-checkbox-lg .el-checkbox-style {
+  width: 32px;
+  height: 32px;
+}
+
+/* Color themes */
+.el-checkbox-green .el-checkbox-style,
+.el-checkbox-green input[type="checkbox"]:checked + .el-checkbox-style {
+  border-color: #2196f3;
+  background: #fff;
+}
+.el-checkbox-green input[type="checkbox"]:checked + .el-checkbox-style {
+  background: #2196f3;
+}
+
+.el-checkbox-red .el-checkbox-style,
+.el-checkbox-red input[type="checkbox"]:checked + .el-checkbox-style {
+  border-color: #e53935;
+  background: #fff;
+}
+.el-checkbox-red input[type="checkbox"]:checked + .el-checkbox-style {
+  background: #e53935;
+}
+
+.el-checkbox-yellow .el-checkbox-style,
+.el-checkbox-yellow input[type="checkbox"]:checked + .el-checkbox-style {
+  border-color: #fbc02d;
+  background: #fff;
+}
+.el-checkbox-yellow input[type="checkbox"]:checked + .el-checkbox-style {
+  background: #fbc02d;
+}
+
+/* Margin right helper */
+.margin-r {
+  margin-right: 8px;
+}
+
+/* Pull right helper */
+.pull-right {
+  float: right;
+}
+
+/* Radio styles */
+.el-radio {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.el-radio input[type="radio"] {
+  display: none;
+}
+
+.el-radio-style {
+  display: inline-block;
+  position: relative;
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  border: 2px solid #bbb;
+  border-radius: 50%;
+  background: #fff;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.el-radio input[type="radio"]:checked + .el-radio-style {
+  border-color: #2196f3;
+  background: #2196f3;
+}
+
+.el-radio-style:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.el-radio input[type="radio"]:checked + .el-radio-style:after {
+  opacity: 1;
+}
+
+/* Switch styles */
+.el-switch {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.el-switch input[type="checkbox"] {
+  display: none;
+}
+
+.el-switch-style {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  background: #ccc;
+  border-radius: 24px;
+  transition: background 0.2s;
+  vertical-align: middle;
+}
+
+.el-switch-style:before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.el-switch input[type="checkbox"]:checked + .el-switch-style {
+  background: #4caf50;
+}
+
+.el-switch input[type="checkbox"]:checked + .el-switch-style:before {
+  left: 21px;
+}

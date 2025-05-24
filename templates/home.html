@@ -6,29 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Forum</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/checkbox.css">
+    <link rel="stylesheet" href="/static/categories-sides.css">
     <script src="https://use.fontawesome.com/fe459689b4.js"></script>
     <script defer src="/static/script.js"></script>
 </head>
-
 
 <header class="navbar">
     <div class="logo">
         <h1><a href="/posts">Forum</a></h1>
     </div>
     <nav class="nav-right">
-        <!-- Create Post Button -->
-   
-        
-
-        <!-- User Profile Section -->
         <div class="user-section">
             <span class="username">{{if .Username}}{{ .Username }}{{end}}</span>
             <img src="/static/defaultAV.png" alt="Profile Picture" class="profile-img">
             {{if .Username}}
             <a href="/logout" class="logout-btn">Log Out</a>
             <button id="createPostBtn" class="btn create-post-btn" type="button">
-            <i class="fa fa-plus"></i> Create Post
-        </button>
+                <i class="fa fa-plus"></i> Create Post
+            </button>
             {{else}}
             <a href="/login" class="login-btn">Log In</a>
             {{end}}
@@ -36,9 +32,7 @@
     </nav>
 </header>
 
-
 <body>
-    <!-- Animated video background -->
     <video autoplay muted loop id="bg-video">
         <source src="/static/animated.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -48,6 +42,16 @@
         <div class="posts">
             {{ range .Posts }}
             <div class="post-card">
+                <div class="post-categories left-categories">
+                    {{ range .LeftCategories }}
+                        <span class="category-badge">{{ . }}</span>
+                    {{ end }}
+                </div>
+                <div class="post-categories right-categories">
+                    {{ range .RightCategories }}
+                        <span class="category-badge">{{ . }}</span>
+                    {{ end }}
+                </div>
                 <div class="post-header">
                     <span class="user-id">{{ .Post_id }}</span>
                     <span class="username-block">
@@ -57,7 +61,6 @@
                     <span class="post-date">{{ .CreatedAt }}</span>
                     <span class="content">
                         <h1>{{ .Content }}</h1>
-                        <h2><p>Category: </p>{{.Status }}</h2>
                     </span>
                     <span>{{.Commenters}}</span>
                     <span>
@@ -89,7 +92,7 @@
     </main>
 
     <!-- Create Post Modal -->
-    <div id="createPostModal" class="modal">
+    <div id="createPostModal" class="modal small-modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
             <h2 id="creatpost-title" style="text-align: center;">Share Your Thoughts</h2>
@@ -98,59 +101,87 @@
                 <input type="text" id="title" name="title" required>
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" rows="6" required></textarea>
-                <label for="category">Category:</label>
-                <label>
-                    <table >
-                        <tr>
-                            <td>Career Advice & Development</td>
-                            <td><input type="checkbox" id="important" name="status" value="Career Advice & Development"></td>
-                        </tr>
-                        <tr>
-                            <td>Industry News & Updates</td>
-                            <td><input type="checkbox" id="important" name="status" value="Industry News & Updates"></td>
-                        </tr>
-                        <tr>
-                            <td>Job Opportunities & Networking</td>
-                            <td><input type="checkbox" id="important" name="status" value="Job Opportunities & Networking"></td>
-                        </tr>
-                        <tr>
-                            <td>Technical Discussions</td>
-                            <td><input type="checkbox" id="important" name="status" value="Technical Discussions"></td>
-                        </tr>
-                        <tr>
-                            <td>Cybersecurity</td>
-                            <td><input type="checkbox" id="important" name="status" value="Cybersecurity"></td>
-                        </tr>
-                        <tr>
-                            <td>Mathematics & Data Science</td>
-                            <td><input type="checkbox" id="important" name="status" value="Mathematics & Data Science"></td>
-                        </tr>
-                        <tr>
-                            <td>Networking & Infrastructure</td>
-                            <td><input type="checkbox" id="important" name="status" value="Networking & Infrastructure"></td>
-                        </tr>
-                        <tr>
-                            <td>Soft Skills & Communication</td>
-                            <td><input type="checkbox" id="important" name="status" value="Soft Skills & Communication"></td>
-                        </tr>
-                        <tr>
-                            <td>Project Management</td>
-                            <td><input type="checkbox" id="important" name="status" value="Project Management"></td>
-                        </tr>
-                        <tr>
-                            <td>Leadership & Management</td>
-                            <td><input type="checkbox" id="important" name="status" value="Leadership & Management"></td>
-                        </tr>
-                    </table>
-                </label>
+                <button type="button" id="toggleCategoryBtn" style="margin-bottom: 10px;">
+                    Show/Hide Categories
+                </button>
+                <div id="category-section" style="display: none;">
+                    <label>Category:</label>
+                    <div class="category-columns">
+                      <div class="category-col">
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat1" value="Career Advice & Development">
+                          <label class="el-checkbox-style" for="cat1"></label>
+                          <span>Career Advice & Development</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat2" value="Job Opportunities & Networking">
+                          <label class="el-checkbox-style" for="cat2"></label>
+                          <span>Job Opportunities & Networking</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat3" value="Cybersecurity">
+                          <label class="el-checkbox-style" for="cat3"></label>
+                          <span>Cybersecurity</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat4" value="Networking & Infrastructure">
+                          <label class="el-checkbox-style" for="cat4"></label>
+                          <span>Networking & Infrastructure</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat5" value="Project Management">
+                          <label class="el-checkbox-style" for="cat5"></label>
+                          <span>Project Management</span>
+                        </div>
+                      </div>
+                      <div class="category-col">
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat6" value="Industry News & Updates">
+                          <label class="el-checkbox-style" for="cat6"></label>
+                          <span>Industry News & Updates</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat7" value="Technical Discussions">
+                          <label class="el-checkbox-style" for="cat7"></label>
+                          <span>Technical Discussions</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat8" value="Mathematics & Data Science">
+                          <label class="el-checkbox-style" for="cat8"></label>
+                          <span>Mathematics & Data Science</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat9" value="Soft Skills & Communication">
+                          <label class="el-checkbox-style" for="cat9"></label>
+                          <span>Soft Skills & Communication</span>
+                        </div>
+                        <div class="el-checkbox el-checkbox-green">
+                          <input type="checkbox" name="status" id="cat10" value="Leadership & Management">
+                          <label class="el-checkbox-style" for="cat10"></label>
+                          <span>Leadership & Management</span>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 <button type="submit">Submit</button>
             </form>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleBtn = document.getElementById('toggleCategoryBtn');
+        var categorySection = document.getElementById('category-section');
+        if (toggleBtn && categorySection) {
+            toggleBtn.addEventListener('click', function() {
+                if (categorySection.style.display === "none") {
+                    categorySection.style.display = "";
+                } else {
+                    categorySection.style.display = "none";
+                }
+            });
+        }
+    });
+    </script>
 </body>
-
 </html>
-
-
-
-

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"html/template"
+	"strings"
 	"time"
 
 	"forum/internal/auth"
@@ -14,6 +15,7 @@ import (
 type User struct {
 	Usernameprofil string
 }
+
 type Post struct {
 	ID        int
 	UserID    int
@@ -22,55 +24,51 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-type PostWithUser struct {
-	Post_id      string
-	Username     string
-	Title1       string
-	Content      string
-	CreatedAt    string
-	Commenters   []DataComment 
-	CommnetString   string       // Show All Commnter For Every Post
-	Status       string
-	LikeDislike  string
-	Colorlike    string
-	ColorDislike string
-	ColorValue   int
-	Bool         int
-	// How much Like_Dislike Evrey posts like ANd Dislike
-	CountUserlike    int
-	CountUserDislike int
-	// Your Profil Form Header
-
-	UserProfil string
-	Headerhtml string
-}
-
 type DataComment struct {
 	Contentcomment string
 }
 
+type PostWithUser struct {
+	Post_id         string
+	Username        string
+	Title1          string
+	Content         string
+	CreatedAt       string
+	Commenters      []DataComment 
+	CommnetString   string       // Show All Commnter For Every Post
+	Status          string       // Comma-separated categories (e.g. "Technical,Soft Skills")
+	LeftCategories  []string     // Left-side categories
+	RightCategories []string     // Right-side categories
+	LikeDislike     string
+	Colorlike       string
+	ColorDislike    string
+	ColorValue      int
+	Bool            int
+	CountUserlike    int
+	CountUserDislike int
+	UserProfil      string
+	Headerhtml      string
+}
+
+type Alldata struct {
+	Posts    []PostWithUser
+	Username string 
+}
+
+// Helper to split categories into two slices
+func splitCategories(categories []string) (left, right []string) {
+	mid := (len(categories) + 1) / 2 // left gets the extra if odd
+	left = categories[:mid]
+	right = categories[mid:]
+	return
+}
+
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
-	//var html PostWithUser
-	//	var addUser PostWithUser
 
 	user_id, _ := auth.CheckSession(w, r)
-	/* if errS != nil {
-		html.Headerhtml = ` 
-		
-		<li><a href="/login">Log In</a></li>
-    	<li><a href="/register">Sign Up </a></li>`
-	} else {
-		html.Headerhtml = `
-				<li><a href="/logout">Log Out</a></li>
-				<li>
-                  <button id="openModalBtn" type="button">Create Post</button>
-                </li>`
-	} */
 
 	db.DB.QueryRow("SELECT username FROM users WHERE user_id = ? ", user_id).Scan(&user.Usernameprofil)
-	// mytmpl, _ := template.ParseFiles("templates/home.html")
-	// mytmpl.Execute(w, user)
 
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -91,19 +89,13 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			users u ON p.user_id = u.user_id
 	`)
 	if err != nil {
-		log.Printf("Error querying databa  se: %v", err)
+		log.Printf("Error querying database: %v", err)
 		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
 	var posts []PostWithUser
-
-type Alldata struct {
-	Posts []PostWithUser
-	Username string 
-}
-
 
 	for rows.Next() {
 		var p PostWithUser
@@ -115,7 +107,7 @@ type Alldata struct {
 
 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
 		if err != nil {
-			log.Printf("Error Content: erying comments: %v", err)
+			log.Printf("Error querying comments: %v", err)
 			http.Error(w, "Error fetching comments", http.StatusInternalServerError)
 			return
 		}
@@ -125,37 +117,20 @@ type Alldata struct {
 			var c DataComment
 			err = rows2.Scan(&c.Contentcomment)
 			if err != nil {
-				fmt.Println(comments)
 				log.Printf("Error scanning comment: %v", err)
 				continue
 			}
 			comments = append(comments, c)
 		}
-
 		if err = rows2.Err(); err != nil {
 			log.Printf("Error iterating comments: %v", err)
 		}
-
-		/*
-							CREATE TABLE IF NOT EXISTS likedislike (
-						    likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
-						    post_id INTEGER NOT NULL,
-						    user_id INTEGER NOT NULL,
-						      TEXT CHECK (likedislike IN ('true', 'false')),
-						    FOREIGN KEY (post_id) REFERENCES posts(post_id),
-						    FOREIGN KEY 	db.DB.Exec("SELECT username FROM WHERE user_id = ? ", user_id).Scan(&)
-			(user_id) REFERENCES users(user_id)
-						);
-		*/
-			// Just check Database count table likedislike  where my ip and evry post
 
 		db.DB.QueryRow("SELECT likedislike  FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'true' ", p.Post_id).Scan(&p.CountUserlike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  likedislike = 'false' ", p.Post_id).Scan(&p.CountUserDislike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ?  and  user_id = ? ", p.Post_id, user_id).Scan(&p.ColorValue)
 
-		//////////////////////////////////////////////////
-		// Print Like AND Dislike every Post-id
 		if p.LikeDislike == "true" {
 			p.Colorlike = "blue"
 		}
@@ -164,16 +139,22 @@ type Alldata struct {
 		}
 
 		p.Commenters = comments
-		fmt.Println(p.Commenters)
 
+		// --- CATEGORY SPLITTING LOGIC HERE ---
+		// If p.Status is a comma-separated string of categories
+		statusList := []string{}
+		for _, s := range strings.Split(p.Status, ",") {
+			cat := strings.TrimSpace(s)
+			if cat != "" {
+				statusList = append(statusList, cat)
+			}
+		}
+		left, right := splitCategories(statusList)
+		p.LeftCategories = left
+		p.RightCategories = right
 
 		posts = append(posts, p)
 	}
-	// addUser.UserProfil = user.Usernameprofil
-	// posts = append(posts, addUser)
-	//posts = append(posts, html)
-
-
 
 	if err = rows.Err(); err != nil {
 		log.Printf("Error iterating posts: %v", err)
@@ -186,16 +167,12 @@ type Alldata struct {
 		return
 	}
 
+	data := Alldata{
+		Posts:    posts,
+		Username: user.Usernameprofil,
+	}
 
-	
-data := Alldata{
-	Posts: posts,
-	Username: user.Usernameprofil ,
-	
-} 
-
-
-fmt.Println("Username : ",data.Username)
+	fmt.Println("Username : ", data.Username)
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
