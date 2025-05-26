@@ -1,0 +1,44 @@
+.post-card {
+    position: relative;
+    padding: 32px 64px;
+    box-sizing: border-box;
+}
+
+.post-categories {
+    position: absolute;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+}
+.left-categories {
+    left: -60px;
+    align-items: flex-end;
+}
+.right-categories {
+    right: -60px;
+    align-items: flex-start;
+}
+.category-badge {
+  background: #622cf794;
+  color: #fff;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+  box-shadow: 0 1px 4px rgba(60, 60, 60, 0.10), 0 0 8px rgba(98, 44, 247, 0.6);
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+    .post-card {
+        padding: 24px 8px;
+    }
+    .left-categories, .right-categories {
+        position: static;
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: flex-start;
+    }
+}

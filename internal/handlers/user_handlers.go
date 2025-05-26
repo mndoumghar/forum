@@ -141,3 +141,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Header Page "Home.html"
 	http.Redirect(w, r, "/posts", http.StatusSeeOther)
 }
+
+
+
+// handlink passwrd formats

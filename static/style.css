@@ -319,14 +319,24 @@ nav ul li button:hover {
     grid-template-columns: 1fr;
     background-color: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(10px);
-    padding: 24px 20px 16px 20px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 500px;
+    padding: 18px 20px;
+    border-radius: 10px;
+    width: 350px !important;
+    max-width: 92vw;
+    margin: 40px auto;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
     position: relative;
     z-index: 100;
     transition: box-shadow 0.2s;
+}
+
+.small-modal .modal-content {
+    width: 500px !important;
+    max-width: 92vw;
+    margin: 40px auto;
+    padding: 18px 20px;
+    border-radius: 10px;
+    font-size: 0.97em;
 }
 
 .close {
@@ -351,23 +361,24 @@ nav ul li button:hover {
 .create-post-form textarea,
 .create-post-form select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
+    padding: 5px 8px;
+    margin-bottom: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 1em;
+    font-size: 0.97em;
     background: rgba(255, 255, 255, 0.7);
     resize: vertical;
     box-sizing: border-box;
 }
 
-.create-post-form button {
+.create-post-form button,
+.create-post-form input[type="submit"] {
     background: #007bff;
     color: #fff;
     border: none;
-    padding: 10px 22px;
+    padding: 6px 16px;
     border-radius: 4px;
-    font-size: 1em;
+    font-size: 0.96em;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -386,10 +397,47 @@ nav ul li button:hover {
     display: flex;
     align-items: center;
     gap: 8px;
+    font-size: 0.98em;
 }
 
-.create-post-form input[type="checkbox"] {
-    accent-color: #7357f0;
-    width: 18px;
-    height: 18px;
+/* Category Columns */
+.category-columns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.category-col {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.el-checkbox {
+    align-items: center;
+}
+
+.el-checkbox-style {
+    margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+    .category-columns {
+        flex-direction: column;
+        gap: 0;
+    }
+    .category-col {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .modal-content {
+        width: 98vw !important;
+        padding: 10px 4px;
+    }
+    .small-modal .modal-content {
+        width: 98vw !important;
+        padding: 10px 4px;
+    }
 }
