@@ -1,22 +1,20 @@
 package models
 
 import (
-	"database/sql"
-	"fmt"
-	"time"
-	// "forum/internal/db"
+    "database/sql"
+    "fmt"
+    "time"
 )
 
 // Category represents a forum category
 type Category struct {
-	Id 			int
-	PostID 		int
-	UserID 		int
-	Status 		string
-	Content 	string
-	CreatedAt 	time.Time
+    Id        int
+    PostID    int
+    UserID    int
+    Status    string
+    Content   string
+    CreatedAt time.Time
 }
-
 
 // GetAllDistinctCategories returns all unique category statuses from the category table.
 func GetalldistCat(db *sql.DB) ([]string, error) {
@@ -25,7 +23,6 @@ func GetalldistCat(db *sql.DB) ([]string, error) {
         return nil, err
     }
     defer rows.Close()
-
     var categories []string
     for rows.Next() {
         var category string
@@ -37,6 +34,21 @@ func GetalldistCat(db *sql.DB) ([]string, error) {
     if err := rows.Err(); err != nil {
         return nil, err
     }
-	fmt.Printf("Fetched categories: %v\n", categories)
+    fmt.Printf("Fetched categories: %v\n", categories)
     return categories, nil
+}
+
+// AddCategory inserts a new category into the database.
+func AddCategory(db *sql.DB, postID, userID int, status, content string) error {
+    _, err := db.Exec(
+        "INSERT INTO category (post_id, user_id, status, content) VALUES (?, ?, ?, ?)",
+        postID, userID, status, content,
+    )
+    return err
+}
+
+// RemoveCategoryByStatus deletes categories with the given status.
+func RemoveCategoryByStatus(db *sql.DB, status string) error {
+    _, err := db.Exec("DELETE FROM category WHERE status = ?", status)
+    return err
 }

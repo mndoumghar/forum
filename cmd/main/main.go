@@ -5,6 +5,8 @@ import (
 	"forum/internal/db"
 	"forum/internal/handlers"
 	"net/http"
+	"forum/internal/models"
+
 )
 
 func main() {
@@ -42,6 +44,32 @@ func main() {
 
 		http.NotFound(w, r)
 	})
+
+	categories := []string{
+    "Career Advice & Development",
+    "Job Opportunities & Networking",
+    "Cybersecurity",
+    "Networking & Infrastructure",
+    "Project Management",
+    "Industry News & Updates",
+    "Technical Discussions",
+    "Mathematics & Data Science",
+    "Soft Skills & Communication",
+    "Leadership & Management",
+	}
+
+	dbConn, err := db.GetDBConnection() // Assuming GetDBConnection() returns the database connection
+	if err != nil {
+		fmt.Printf("Failed to get database connection: %v\n", err)
+		return
+	}
+
+	for _, cat := range categories {
+		err := models.AddCategory(dbConn, 1, 1, cat, cat) // post_id=1, user_id=1, status=cat, content=cat
+		if err != nil {
+			fmt.Println("Error adding category:", cat, err)
+		}
+	}
 
 	fmt.Println("server started at :8080\nVisit http://localhost:8080 to access the forum.")
 

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -88,4 +88,12 @@ func InitDB() error {
 	`
 	_, err = DB.Exec(createTables)
 	return err
+}
+
+// GetDBConnection returns the current DB connection.
+func GetDBConnection() (*sql.DB, error) {
+    if DB == nil {
+        return nil, fmt.Errorf("database connection is not initialized")
+    }
+    return DB, nil
 }
