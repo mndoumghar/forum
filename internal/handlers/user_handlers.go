@@ -17,7 +17,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Email already taken", Color: "red"},
-			{Error: "Registration successful 🚀✨💪🏆 ", Color: "green"},
+			{Error: "Registration successful", Color: "green"},
 			{Error: "", Color: ""},
 		},
 	}
@@ -78,7 +78,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Password or email not correct", Color: "red"},
-			{Error: "Registration successful 🚀✨💪🏆 ", Color: "green"},
+			{Error: "Registration successful ", Color: "green"},
 			{Error: "", Color: ""},
 		},
 	}
