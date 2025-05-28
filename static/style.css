@@ -299,6 +299,32 @@ nav ul li button:hover {
     background-color: #0d8ddb;
 }
 
+
+
+/* categoury filter */
+
+
+.category-filter {
+  background: rgba(255,255,255,0.06);
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.category-filter-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.category-filter label {
+  font-size: 15px;
+  color: #222;
+}
+
+
 /* Modal Styles */
 .modal {
     display: none;

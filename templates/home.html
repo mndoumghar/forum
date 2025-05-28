@@ -33,10 +33,40 @@
 </header>
 
 <body>
+
+    <form method="get" action="/posts">
+      <label for="category">Filter by category:</label>
+      <select id="category" name="category">
+        <option value="">-- All Categories --</option>
+        {{ range .AllCategories }}
+          <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
+        {{ end }}
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+
+
+
     <video autoplay muted loop id="bg-video">
         <source src="/static/animated.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
+
+
+    <!-- <form id="categoryFilterForm" action="/posts" method="GET" style="margin-bottom: 20px;">
+  <div class="category-filter">
+    <label for="categories">Filter by categories:</label>
+    <div class="category-filter-list">
+      {{ range .AllCategories }}
+        <label>
+          <input type="checkbox" name="categories" value="{{ . }}">
+          {{ . }}
+        </label>
+      {{ end }}
+    </div>
+    <button type="submit" class="btn">Filter</button>
+  </div>
+    </form> -->
 
     <main class="container">
         <div class="posts">
