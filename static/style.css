@@ -198,7 +198,7 @@ nav ul li button:hover {
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 24px 20px 16px 20px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18), 0 0 12px 2px #0e4c72;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18), 0 0 12px 2px #3112bb;
     transition: box-shadow 0.2s, transform 0.3s ease-in-out;
     color: #222;
     position: relative;

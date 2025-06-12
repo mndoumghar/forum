@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	// "fmt"
 	"net/http"
 	"strings"
 	"text/template"
@@ -9,73 +9,52 @@ import (
 	"forum/internal/auth"
 	"forum/internal/db"
 )
-
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
-	user_id, err := auth.CheckSession(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-	}
+    user_id, err := auth.CheckSession(w, r)
+    if err != nil {
+        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        return
+    }
 
-	// Handle GET request: Render the create post form
-	if r.Method == http.MethodGet {
-		tmpl, err := template.ParseFiles("templates/creat_post.html")
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
+    if r.Method == http.MethodGet {
+        tmpl, err := template.ParseFiles("templates/home.html")
+        if err != nil {
+            http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+            return
+        }
+        err = tmpl.Execute(w, nil)
+        if err != nil {
+            http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+            return
+        }
+        return
+    }
 
-		err = tmpl.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-		return
-	}
+    if r.Method == http.MethodPost {
+        err := r.ParseForm()
+        if err != nil {
+            http.Error(w, "Bad Request", http.StatusBadRequest)
+            return
+        }
 
-	// Handle POST request: Process form submission
-	if r.Method == http.MethodPost {
-		// Parse form data
-		err := r.ParseForm()
-		if err != nil {
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-			return
-		}
+        status := r.Form["status"]
+        statusStr := strings.Join(status, " ")
 
-		// if content == "" {
-		// 	http.Error(w, "Content cannot be empty", http.StatusBadRequest)
-		// 	return
-		// }
+        title := r.FormValue("title")
+        content := r.FormValue("content")
 
-		// Temporary user ID (replace with actual session-based user ID)
-		// kayna form wkayna Form L3adiya
-		// 3lach khddmt b lform Bach njbd Ga3 l values Li Fihom same Name f input chechbox f Html
-		// W r.form['status'] Kaththoum F slice
-		// ama formValues katkhd ghir valus li drty lih CheckBox f html
-		// hna bghina Ka3 element Dyal Categorie
+        _, err = db.DB.Exec(
+            "INSERT INTO posts (user_id, title, content, status) VALUES (?, ?, ?, ?)",
+            user_id, title, content, statusStr,
+        )
+        if err != nil {
+            http.Error(w, "Failed to create post", http.StatusInternalServerError)
+            return
+        }
 
-		status := r.Form["status"]
-		// hna Hwlt Slice l String Hint Maymknch Tsift l DAta base Slice f Vazlues khaso ikon string li howa TEXT Aw varchar nvarchr hado likaynin f database
-		//
-		statusStr := strings.Join(status, " ")
-		fmt.Println(status)
+        http.Redirect(w, r, "/posts", http.StatusSeeOther)
+        return
+    }
 
-		post_id := r.FormValue("post_id")
-		content := r.FormValue("content")
-
-		// in this Fucnction Chech If Session was Exist If Existed THen Save Your User_Id
-
-		// Insert post into database
-		_, err = db.DB.Exec("INSERT INTO category(user_id, post_id, status, content) VALUES(?, ?, ? , ?)", user_id, post_id,statusStr, content)
-		if err != nil {
-			http.Error(w, "Failed to create postss", http.StatusInternalServerError)
-			return
-		}
-
-		// Redirect to posts page
-		http.Redirect(w, r, "/posts", http.StatusSeeOther)
-		return
-	}
-
-	// Handle other methods
-	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+    http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
