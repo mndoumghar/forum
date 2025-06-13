@@ -14,6 +14,22 @@ body {
 }
 
 /* Navbar */
+.navbar {/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Font and Color Setup */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #000;
+    color: #e6e6e6;
+    line-height: 1.6;
+}
+
+/* Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -137,36 +153,510 @@ body {
     background-color: #1a1a1a;
     border: 1px solid #1da1f2;
     color: #1da1f2;
-    padding: 2px 10px;
+    padding: 4px 12px;
     border-radius: 50px;
     font-size: 0.75rem;
-    margin-right: 5px;
+    margin-right: 8px; /* small margin between badges */
+    display: inline-block;
 }
 
-/* Like/Dislike Buttons */
-#green, #red {
+
+.like-dislike-form {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.like-dislike-form button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 9999px; /* pill shape */
+  cursor: pointer;
+  border: none;
+  user-select: none;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  gap: 0.6rem;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.like-dislike-form button p {
+  margin: 0;
+}
+
+/* Dislike button - Left side */
+.dislike-btn {
+  background-color: #f4212e; /* x.com red */
+  color: white;
+  justify-content: flex-start;
+  padding-left: 2rem;
+  box-shadow: 0 2px 5px rgba(244, 33, 46, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.dislike-btn:hover,
+.dislike-btn:focus {
+  background-color: #d21220;
+  box-shadow: 0 4px 12px rgba(210, 18, 32, 0.5);
+  transform: translateX(-5px) scale(1.05);
+  outline: none;
+}
+
+.dislike-btn i {
+  font-size: 1.4rem;
+  order: 2;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.dislike-btn p {
+  order: 1;
+  font-size: 1.2rem;
+}
+
+/* Like button - Right side */
+.like-btn {
+  background-color: #1da1f2; /* x.com blue */
+  color: white;
+  justify-content: flex-end;
+  padding-right: 2rem;
+  box-shadow: 0 2px 5px rgba(29, 161, 242, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.like-btn:hover,
+.like-btn:focus {
+  background-color: #0d95e8;
+  box-shadow: 0 4px 12px rgba(13, 149, 232, 0.5);
+  transform: translateX(5px) scale(1.05);
+  outline: none;
+}
+
+.like-btn i {
+  font-size: 1.4rem;
+  order: 1;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.like-btn p {
+  order: 2;
+  font-size: 1.2rem;
+}
+
+/* Comment Section */
+.comment-section input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.comment-section input[type="submit"] {
+    background-color: #1da1f2;
+    border: none;
+    color: #000;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.comment-section input[type="submit"]:hover {
+    background-color: #0d8ddb;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #111;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    border: 1px solid #333;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal .close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+}
+
+/* Form Elements in Modal */
+.create-post-form input[type="text"],
+.create-post-form textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.create-post-form button[type="submit"],
+#createPostBtn {
+    width: 100%;
+    background-color: #1da1f2;
+    color: #000;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.create-post-form button[type="submit"]:hover {
+    background-color: #0d8ddb;
+}
+
+/* Category Toggle */
+#toggleCategoryBtn {
+    background: none;
+    border: 1px solid #1da1f2;
+    color: #1da1f2;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background 0.3s ease;
+}
+
+#toggleCategoryBtn:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+/* Filter Form */
+form[action="/posts"] {
+    margin: 2rem auto;
+    text-align: center;
+}
+
+form[action="/posts"] select,
+form[action="/posts"] button {
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin: 0 0.5rem;
+}
+
+form[action="/posts"] button:hover {
+    background-color: #1da1f2;
+    color: #000;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .navbar, .user-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .username-block {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-header {
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 1rem;
+    }
+}
+.commenters-container {
+    margin-top: 1rem;
+}
+
+.toggle-commenters-btn {
+    background-color: #1a1a1a;
+    color: #1da1f2;
+    border: 1px solid #1da1f2;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-commenters-btn:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+.commenters-list {
+    list-style: none;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    color: #ccc;
+}
+
+.commenters-list li {
+    padding: 0.2rem 0;
+    font-size: 0.9rem;
+}
+
+.hidden {
+    display: none;
+}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.navbar .logo h1 a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    transition: color 0.3s;
+}
+
+.navbar .logo h1 a:hover {
+    color: #1da1f2;
+}
+
+.nav-right {
     display: flex;
     align-items: center;
-    gap: 6px;
-    border: none;
-    padding: 0.4rem 0.7rem;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    background-color: transparent;
 }
 
-#green:hover {
-    background-color: rgba(0, 255, 0, 0.1);
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-#red:hover {
-    background-color: rgba(255, 0, 0, 0.1);
+.username {
+    font-weight: 600;
 }
 
-#green i, #red i {
+.profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #1da1f2;
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.1);
+}
+
+.logout-btn, .login-btn, .btn {
+    background: transparent;
+    border: 1px solid #1da1f2;
     color: #1da1f2;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover,
+.login-btn:hover,
+.btn:hover {
+    background-color: #1da1f2;
+    color: #000;
+}
+
+/* Post Cards */
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.post-card {
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 15px rgba(29, 161, 242, 0.2);
+}
+
+.post-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.username-block {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.content h1 {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Category Badges */
+.category-badge {
+    background-color: #1a1a1a;
+    border: 1px solid #1da1f2;
+    color: #1da1f2;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    margin-right: 8px; /* small margin between badges */
+    display: inline-block;
+}
+
+
+.like-dislike-form {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.like-dislike-form button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 9999px; /* pill shape */
+  cursor: pointer;
+  border: none;
+  user-select: none;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  gap: 0.6rem;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.like-dislike-form button p {
+  margin: 0;
+}
+
+/* Dislike button - Left side */
+.dislike-btn {
+  background-color: #f4212e; /* x.com red */
+  color: white;
+  justify-content: flex-start;
+  padding-left: 2rem;
+  box-shadow: 0 2px 5px rgba(244, 33, 46, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.dislike-btn:hover,
+.dislike-btn:focus {
+  background-color: #d21220;
+  box-shadow: 0 4px 12px rgba(210, 18, 32, 0.5);
+  transform: translateX(-5px) scale(1.05);
+  outline: none;
+}
+
+.dislike-btn i {
+  font-size: 1.4rem;
+  order: 2;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.dislike-btn p {
+  order: 1;
+  font-size: 1.2rem;
+}
+
+/* Like button - Right side */
+.like-btn {
+  background-color: #1da1f2; /* x.com blue */
+  color: white;
+  justify-content: flex-end;
+  padding-right: 2rem;
+  box-shadow: 0 2px 5px rgba(29, 161, 242, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.like-btn:hover,
+.like-btn:focus {
+  background-color: #0d95e8;
+  box-shadow: 0 4px 12px rgba(13, 149, 232, 0.5);
+  transform: translateX(5px) scale(1.05);
+  outline: none;
+}
+
+.like-btn i {
+  font-size: 1.4rem;
+  order: 1;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.like-btn p {
+  order: 2;
+  font-size: 1.2rem;
 }
 
 /* Comment Section */
