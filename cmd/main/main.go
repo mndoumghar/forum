@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"forum/internal/db"
 	"forum/internal/handlers"
-	"net/http"
 	"forum/internal/models"
-
+	"net/http"
 )
 
 func main() {
@@ -24,6 +23,9 @@ func main() {
 	http.HandleFunc("/comment", handlers.CommentHandler)
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
 	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
+	//http.HandleFunc("/filter", handlers.FilterByCategoryHandler)
+	//http.HandleFunc("/my-posts", handlers.MyPostsHandler)
+	//http.HandleFunc("/my-likes", handlers.MyLikedPostsHandler)
 
 	//	http.HandleFunc("/posts/", handlers.PostHandler) // e.g., /posts/1
 	//	http.HandleFunc("/comment", handlers.CommentHandler)
@@ -46,16 +48,16 @@ func main() {
 	})
 
 	categories := []string{
-    "Career Advice & Development",
-    "Job Opportunities & Networking",
-    "Cybersecurity",
-    "Networking & Infrastructure",
-    "Project Management",
-    "Industry News & Updates",
-    "Technical Discussions",
-    "Mathematics & Data Science",
-    "Soft Skills & Communication",
-    "Leadership & Management",
+		"Career Advice & Development",
+		"Job Opportunities & Networking",
+		"Cybersecurity",
+		"Networking & Infrastructure",
+		"Project Management",
+		"Industry News & Updates",
+		"Technical Discussions",
+		"Mathematics & Data Science",
+		"Soft Skills & Communication",
+		"Leadership & Management",
 	}
 
 	dbConn, err := db.GetDBConnection() // Assuming GetDBConnection() returns the database connection
