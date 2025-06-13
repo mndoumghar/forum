@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.commenters-list li').forEach(li => {
     li.textContent = li.textContent.replace(/[{}]/g, '');

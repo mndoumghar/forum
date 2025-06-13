@@ -114,28 +114,9 @@
             <li>{{.}}</li>
         {{end}}
     </ul>
-
+    
 </div>
-   
- <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const toggleButtons = document.querySelectorAll('.toggle-commenters-btn');
 
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const list = this.nextElementSibling;
-
-            if (list.classList.contains('hidden')) {
-                list.classList.remove('hidden');
-                this.textContent = 'Hide Commenters';
-            } else {
-                list.classList.add('hidden');
-                this.textContent = 'Show Commenters';
-            }
-        });
-    });
-});
-</script>
             </div>
             {{ end }}
         </div>
