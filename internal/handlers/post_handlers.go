@@ -192,7 +192,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		SelectedCategory: selectedCategory,
 	}
 
-	fmt.Println("DAta : ", allCategories)
+	fmt.Println("Data : ", allCategories)
 
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
@@ -322,4 +322,122 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 // 		return
 // 	}
 // 	tmpl.Execute(w, data)
+// }
+
+// Additional filter function if you need a separate endpoint
+// func FilterByCategory(w http.ResponseWriter, r *http.Request) {
+// 	user_id, _ := auth.CheckSession(w, r)
+//
+// 	// Get username for displaying in template
+// 	var user User
+// 	err := db.DB.QueryRow("SELECT username FROM users WHERE user_id = ?", user_id).Scan(&user.Usernameprofil)
+// 	if err != nil {
+// 		log.Printf("Error getting username: %v", err)
+// 	}
+
+// 	category := r.URL.Query().Get("category")
+
+// 	// Get all categories for filter dropdown
+// 	allCategories, err := models.GetalldistCat(db.DB)
+// 	if err != nil {
+// 		log.Printf("Error fetching categories: %v", err)
+// 		allCategories = []string{}
+// 	}
+
+// 	// Filter query (notice we're joining category table to filter by status)
+// 	rows, err := db.DB.Query(`
+// 		SELECT p.post_id, u.username, p.content, p.status, p.created_at
+// 		FROM posts p
+// 		JOIN users u ON p.user_id = u.user_id
+// 		JOIN category c ON p.post_id = c.post_id
+// 		WHERE c.status = ?`, category)
+// 	if err != nil {
+// 		log.Printf("Error querying filtered posts: %v", err)
+// 		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+// 		return
+// 	}
+// 	defer rows.Close()
+
+// 	var posts []PostWithUser
+
+// 	for rows.Next() {
+// 		var p PostWithUser
+// 		err = rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.Status, &p.CreatedAt)
+// 		if err != nil {
+// 			log.Printf("Error scanning row: %v", err)
+// 			continue
+// 		}
+
+// 		// Fetch comments for each post
+// 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
+// 		if err != nil {
+// 			log.Printf("Error querying comments: %v", err)
+// 			continue
+// 		}
+// 		var comments []DataComment
+// 		for rows2.Next() {
+// 			var c DataComment
+// 			err = rows2.Scan(&c.Contentcomment)
+// 			if err != nil {
+// 				log.Printf("Error scanning comment: %v", err)
+// 				continue
+// 			}
+// 			comments = append(comments, c)
+// 		}
+// 		rows2.Close()
+// 		p.Commenters = comments
+
+// 		// Likes / Dislikes logic (same as your existing handler)
+// 		db.DB.QueryRow("SELECT likedislike FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
+// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
+// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
+// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and user_id = ?", p.Post_id, user_id).Scan(&p.ColorValue)
+
+// 		if p.LikeDislike == "true" {
+// 			p.Colorlike = "blue"
+// 		} else if p.LikeDislike == "false" {
+// 			p.Colorlike = "red"
+// 		}
+
+// 		// Split categories
+// 		statusList := []string{}
+// 		for _, s := range strings.Split(p.Status, ",") {
+// 			s = strings.TrimSpace(s)
+// 			if s != "" {
+// 				statusList = append(statusList, s)
+// 			}
+// 		}
+// 		left, right := splitCategories(statusList)
+// 		p.LeftCategories = left
+// 		p.RightCategories = right
+
+// 		posts = append(posts, p)
+// 	}
+
+// 	if err = rows.Err(); err != nil {
+// 		log.Printf("Error iterating posts: %v", err)
+// 	}
+
+// 	// Build the data for template
+// 	data := Alldata{
+// 		Posts:            posts,
+// 		Username:         user.Usernameprofil,
+// 		AllCategories:    allCategories,
+// 		SelectedCategory: category,
+// 	}
+
+// 	// Render home.html
+// 	tmpl, err := template.ParseFiles("templates/home.html")
+// 	if err != nil {
+// 		log.Printf("Error parsing template: %v", err)
+// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	err = tmpl.Execute(w, data)
+// 	if err != nil {
+// 		log.Printf("Error executing template: %v", err)
+// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+// 		return
+// 	}
 // }
