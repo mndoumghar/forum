@@ -42,3 +42,23 @@ document.addEventListener('DOMContentLoaded', function() {
     styleButton(document.querySelector('a[href="/login"]'));
     styleButton(createBtn);
 });
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.toggle-commenters-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = btn.nextElementSibling;
+      if (!list) return;
+      list.classList.toggle('hidden');
+      btn.textContent = list.classList.contains('hidden') ? 'Show Commenters' : 'Hide Commenters';
+    });
+  });
+});
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.commenters-list li').forEach(li => {
+    li.textContent = li.textContent.replace(/[{}]/g, '');
+  });
+});
