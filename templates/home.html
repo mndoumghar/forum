@@ -105,7 +105,13 @@
     <button class="toggle-commenters-btn">Show Commenters</button>
     <ul class="commenters-list hidden">
         {{range .Commenters}}
-            <li>{{.}}</li>
+        <!--  Contentcomment string
+	Usercommnter string -->
+            <li> 
+                <ul>
+<h1> <a href="#">{{ .Usercommnter }}</a></h1>  {{.Contentcomment}}</li>
+                </ul>
+            
         {{end}}
     </ul>
     
