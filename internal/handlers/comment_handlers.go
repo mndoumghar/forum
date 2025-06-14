@@ -8,17 +8,13 @@ import (
 )
 
 func CommentHandler(w http.ResponseWriter, r *http.Request) {
-
 	user_id, err := auth.CheckSession(w, r)
-
-
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-
 	}
 
 	if r.Method != http.MethodGet {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Failed to add comment, ", "Please try again later.", nil)
 		return
 	}
 	if r.Method == http.MethodGet {
@@ -30,8 +26,7 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
 		if err != nil {
-
-			http.Error(w, "Registration fvailed", http.StatusInternalServerError)
+			ErrorHandler(w, http.StatusInternalServerError, "Failed to add comment", "Please try again later.", err)
 			return
 		}
 

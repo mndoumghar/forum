@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error page</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Error: {{ .Status }}</h1>
+        <p>{{ .Error_message }}</p>
+        <button>
+            <a href="/">Back to Home</a>
+        </button>
+        
+    </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #aba6f0;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        p {
+            font-size: 1.2em;
+            color: white;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</body>
+</html>

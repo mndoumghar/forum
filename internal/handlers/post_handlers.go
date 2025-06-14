@@ -74,7 +74,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.QueryRow("SELECT username FROM users WHERE user_id = ? ", user_id).Scan(&user.Usernameprofil)
 
 	if r.Method != http.MethodGet {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed", "Please use the correct HTTP method.", nil)
 		return
 	}
 
@@ -118,7 +118,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
-		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Error fetching post data", "Please try again later.", err)
 		return
 	}
 	defer rows.Close()
@@ -136,7 +136,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		rows2, err := db.DB.Query(`SELECT content,username FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
-			http.Error(w, "Error fetching comments", http.StatusInternalServerError)
+			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments", "Please try again later.", err)
 			return
 		}
 		var comments []DataComment
@@ -199,14 +199,14 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "Please try again later.", err)
 		return
 	}
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "Please try again later.", err)
 		return
 	}
 }
