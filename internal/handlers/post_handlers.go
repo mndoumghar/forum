@@ -28,6 +28,7 @@ type Post struct {
 
 type DataComment struct {
 	Contentcomment string
+	Usercommnter string
 }
 
 type PostWithUser struct {
@@ -132,7 +133,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Fetch comments
-		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
+		rows2, err := db.DB.Query(`SELECT content,username FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
 			http.Error(w, "Error fetching comments", http.StatusInternalServerError)
@@ -141,7 +142,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
-			err = rows2.Scan(&c.Contentcomment)
+			err = rows2.Scan(&c.Contentcomment,&c.Usercommnter)
 			if err != nil {
 				log.Printf("Error scanning comment: %v", err)
 				continue
@@ -166,6 +167,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		p.Commenters = comments
+		fmt.Println("------------  ", comments)
 
 		// Split status into categories if comma-separated
 		statusList := []string{}
