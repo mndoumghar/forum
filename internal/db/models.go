@@ -22,6 +22,17 @@ type Post struct {
 	CreatedAt time.Time
 }
 
+func CheckPostId(postId int) (*Post, error) {
+	var p Post
+	err := DB.QueryRow("SELECT post_id FROM posts WHERE post_id = ?", postId).
+		Scan(&p.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
+
+
 func GetUserByEmail(email string) (*User, error) {
 	var u User
 	err := DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users WHERE email = ?", email).
@@ -32,6 +43,7 @@ func GetUserByEmail(email string) (*User, error) {
 	return &u, nil
 }
 
+<<<<<<< HEAD
 func CheckPostId(postId int) (*Post, error) {
 	var p Post
 	err := DB.QueryRow("SELECT post_id FROM posts WHERE post_id = ?", postId).
@@ -41,6 +53,20 @@ func CheckPostId(postId int) (*Post, error) {
 	}
 	return &p, nil
 }
+=======
+
+func GetUserByEmailUsername(email string) (*User, error) {
+	var u User
+	err := DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users WHERE email = ? OR  username = ?", email,email).
+		Scan(&u.ID, &u.Email, &u.Username, &u.Password, &u.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+func GetPost() (*Post, *User, error) {
+>>>>>>> mndoumghar
 
 func GetPost() (*Post, *User, error) {
 	var p Post

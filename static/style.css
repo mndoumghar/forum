@@ -291,6 +291,34 @@ body {
 }
 
 .modal-content {
+<<<<<<< HEAD
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    padding: 18px 20px;
+    border-radius: 10px;
+    width: 350px !important;
+    max-width: 92vw;
+    margin: 40px auto;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    position: relative;
+    z-index: 100;
+    transition: box-shadow 0.2s;
+}
+
+.small-modal .modal-content {
+    width: 500px !important;
+    max-width: 92vw;
+    margin: 40px auto;
+    padding: 18px 20px;
+    border-radius: 10px;
+    font-size: 0.97em;
+}
+
+.close {
+    color: #aaa;
+=======
     background-color: #111;
     padding: 2rem;
     border-radius: 12px;
@@ -312,6 +340,7 @@ body {
 }
 
 .modal .close {
+>>>>>>> aayyada
     position: absolute;
     top: 1rem;
     right: 1.5rem;
@@ -324,11 +353,27 @@ body {
 .create-post-form input[type="text"],
 .create-post-form textarea {
     width: 100%;
+<<<<<<< HEAD
+    padding: 5px 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.97em;
+    background: rgba(255, 255, 255, 0.7);
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.create-post-form button,
+.create-post-form input[type="submit"] {
+    background: #007bff;
+=======
     margin-bottom: 1rem;
     padding: 0.75rem;
     border-radius: 8px;
     border: 1px solid #444;
     background-color: #1a1a1a;
+>>>>>>> aayyada
     color: #fff;
 }
 
@@ -339,7 +384,13 @@ body {
     color: #000;
     padding: 0.75rem;
     border: none;
+<<<<<<< HEAD
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 0.96em;
+=======
     border-radius: 8px;
+>>>>>>> aayyada
     cursor: pointer;
     font-weight: bold;
     transition: background 0.3s;
@@ -465,6 +516,52 @@ form[action="/posts"] button:hover {
 .nav-right {
     display: flex;
     align-items: center;
+<<<<<<< HEAD
+    gap: 8px;
+    font-size: 0.98em;
+}
+
+/* Category Columns */
+.category-columns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.category-col {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.el-checkbox {
+    align-items: center;
+}
+
+.el-checkbox-style {
+    margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+    .category-columns {
+        flex-direction: column;
+        gap: 0;
+    }
+    .category-col {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .modal-content {
+        width: 98vw !important;
+        padding: 10px 4px;
+    }
+    .small-modal .modal-content {
+        width: 98vw !important;
+        padding: 10px 4px;
+    }
+=======
 }
 
 .user-section {
@@ -848,4 +945,5 @@ form[action="/posts"] button:hover {
 
 .hidden {
     display: none;
+>>>>>>> aayyada
 }
