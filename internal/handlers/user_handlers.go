@@ -14,9 +14,18 @@ import (
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := auth.CheckSession(w, r)
+
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	} 
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Email already taken", Color: "red"},
+			{Error: "Username must be at least 5 characters", Color: "red"},
+			{Error: "Password must be at least 6 characters", Color: "red"},
+			{Error: "Email must be at least 6 characters", Color: "red"},
 			{Error: "Registration successful", Color: "green"},
 			{Error: "", Color: ""},
 		},
@@ -41,8 +50,17 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
+		if len(email) < 6 || len(username) < 5 || len(password) < 6 {
+		tmpl, _ := template.ParseFiles("templates/register.html")
+		if len(email) < 6 { tmpl.Execute(w, Data.ErrorColor[3])} 
+		if len(username) < 5 { tmpl.Execute(w, Data.ErrorColor[1]) }
+		if len(password) < 6 { tmpl.Execute(w, Data.ErrorColor[2]) }
+								   
+		return
+	}
+
 	// Check if email exists
-	if _, err := db.GetUserByEmail(email); err == nil {
+	if _, err := db.GetUserByEmailUsername(email); err == nil {
 		tmpl, _ := template.ParseFiles("templates/register.html")
 		// error.Error =  "Email already taken"
 		tmpl.Execute(w, Data.ErrorColor[0])
@@ -73,6 +91,15 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // Login Page if Exist Your Information
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	
+_, err := auth.CheckSession(w, r)
+
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	} 
+	
+
 	// Declar Struct Type Error From CSS
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
@@ -108,7 +135,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// You Can Add THe most Error obligatiore like you should to Add all Input Maximum superier >6 charcater ...
 	//  Add Another baakcgriund like this  BUt i need  like as Project Forum Or media onginral  and you u most to respect color background Shadow in  some Black image
 
-	user, err := db.GetUserByEmail(email)
+	user, err := db.GetUserByEmailUsername(email)
 	if err != nil {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {

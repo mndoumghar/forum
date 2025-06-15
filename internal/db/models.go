@@ -22,9 +22,9 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-func GetUserByEmail(email string) (*User, error) {
+func GetUserByEmailUsername(email string) (*User, error) {
 	var u User
-	err := DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users WHERE email = ?", email).
+	err := DB.QueryRow("SELECT user_id, email, username, password, created_at FROM users WHERE email = ? OR  username = ?", email,email).
 		Scan(&u.ID, &u.Email, &u.Username, &u.Password, &u.CreatedAt)
 	if err != nil {
 		return nil, err

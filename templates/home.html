@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Forum</title>
     <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -569,6 +571,16 @@
                 min-width: unset;
             }
         }
+
+
+        
+
+
+
+
+
+
+
     </style>
     <script defer src="/static/script.js"></script>
 </head>
@@ -598,10 +610,13 @@
         <form method="get" action="/posts">
             <label for="category">Filter by category:</label>
             <select id="category" name="category">
-                <option value="">-- All Categories --</option>
-                {{ range .AllCategories }}
-                <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
-                {{ end }}
+               <option value="sport">Sport</option>
+               <option value="jobs">Jobs</option>
+               <option value="news">News</option>
+               <option value="movies">Movies</option>
+               <option value="tech">Tech</option>
+               <option value="other">Other</option>
+                
             </select>
             <button type="submit">Filter</button>
         </form>
@@ -674,7 +689,7 @@
         </div>
     </main>
 
-    <!-- Create Post Modal -->
+    
     <div id="createPostModal" class="modal small-modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
@@ -687,38 +702,42 @@
                 <button type="button" id="toggleCategoryBtn" style="margin-bottom: 10px;">
                     Show/Hide Categories
                 </button>
-                <div id="category-section" style="display: none;">
-                    <label>Category:</label>
-                    <div class="category-columns">
-                        <div class="category-col">
-                            <div class="el-checkbox el-checkbox-green">
-                                <input type="checkbox" name="status" id="cat1" value="Tech">
-                                <label class="el-checkbox-style" for="cat1"></label>
-                                <span>Tech</span>
-                            </div>
-                            <div class="el-checkbox el-checkbox-green">
-                                <input type="checkbox" name="status" id="cat2" value="Jobs">
-                                <label class="el-checkbox-style" for="cat2"></label>
-                                <span>Jobs</span>
-                            </div>
-                            <div class="el-checkbox el-checkbox-green">
-                                <input type="checkbox" name="status" id="cat3" value="News">
-                                <label class="el-checkbox-style" for="cat3"></label>
-                                <span>News</span>
-                            </div>
-                            <div class="el-checkbox el-checkbox-green">
-                                <input type="checkbox" name="status" id="cat4" value="Education">
-                                <label class="el-checkbox-style" for="cat4"></label>
-                                <span>Education</span>
-                            </div>
-                            <div class="el-checkbox el-checkbox-green">
-                                <input type="checkbox" name="status" id="cat5" value="Other">
-                                <label class="el-checkbox-style" for="cat5"></label>
-                                <span>Other</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <div id="category-section" style="display: none;">
+    <label>Category:</label>
+    <div class="category-buttons">
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="tech">
+            <i class="fas fa-microchip"></i>
+            <span>Tech</span>
+        </label>
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="jobs">
+            <i class="fas fa-briefcase"></i>
+            <span>Jobs</span>
+        </label>
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="news">
+            <i class="fas fa-newspaper"></i>
+            <span>News</span>
+        </label>
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="movies">
+            <i class="fas fa-film"></i>
+            <span>Movies</span>
+        </label>
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="sport">
+            <i class="fas fa-basketball-ball"></i>
+            <span>Sport</span>
+        </label>
+        <label class="category-btn">
+            <input type="checkbox" name="status" value="other">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Other</span>
+        </label>
+    </div>
+</div>
+
                 <button type="submit">Submit</button>
             </form>
         </div>
