@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -84,7 +83,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Category filtering logic
-	selectedCategory := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("category")))
+	selectedCategory := r.URL.Query().Get("category")
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -93,44 +92,40 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var rows *sql.Rows
 	if selectedCategory != "" {
+		// Query posts that have the selected category in their status
 		rows, err = db.DB.Query(`
-		SELECT
-			p.post_id,
-			u.username,
-			p.content,
-			p.status,
-			p.created_at
-		FROM
-			posts p
-		JOIN
-			users u ON p.user_id = u.user_id
-		JOIN
-			category c ON p.post_id = c.post_id
-		WHERE
-			LOWER(TRIM(c.status)) = ?
-			AND p.user_id = ?
-	`, selectedCategory, user_id)
+			SELECT
+				p.post_id,
+				u.username,
+				p.title,
+				p.content,
+				p.status,
+				p.created_at
+			FROM
+				posts p
+			JOIN
+				users u ON p.user_id = u.user_id
+			WHERE
+				p.status LIKE ?`, "%"+selectedCategory+"%")
 	} else {
+		// Query all posts if no category is selected
 		rows, err = db.DB.Query(`
 			SELECT 
-    p.post_id, 
-    u.username, 
-    p.content,
-	p.title,
-    p.status, 
-    p.created_at 
-FROM 
-    posts p
-JOIN 
-    users u ON p.user_id = u.user_id
-ORDER BY 
-    p.created_at DESC
-				
-				`)
+				p.post_id, 
+				u.username, 
+				p.title,
+				p.content,
+				p.status, 
+				p.created_at 
+			FROM 
+				posts p
+			JOIN 
+				users u ON p.user_id = u.user_id
+			ORDER BY p.created_at DESC`)
 	}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Error fetching post data, Please try again later.", "")
+		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -138,14 +133,14 @@ ORDER BY
 	var posts []PostWithUser
 	for rows.Next() {
 		var p PostWithUser
-		err = rows.Scan(&p.Post_id, &p.Username, &p.Content,&p.Title1, &p.Status, &p.CreatedAt)
+		err = rows.Scan(&p.Post_id, &p.Username, &p.Title1, &p.Content, &p.Status, &p.CreatedAt)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			continue
 		}
 
 		// Fetch comments
-		rows2, err := db.DB.Query(`SELECT c.content,s.username , c.created_at FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
+		rows2, err := db.DB.Query(`SELECT c.content, s.username, c.created_at FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ? ORDER BY c.created_at DESC`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
 			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments, Please try again later.", "")
@@ -161,19 +156,17 @@ ORDER BY
 				days := int(duration.Hours()) / 24
 				c.TimePost = days
 				c.TmieType = "day(s) ago"
-
 			} else if duration.Hours() >= 1 {
 				hours := int(duration.Hours())
 				c.TimePost = hours
 				c.TmieType = " hour(s) ago"
-
 			} else if duration.Minutes() >= 1 {
 				minutes := int(duration.Minutes())
 				c.TimePost = minutes
 				c.TmieType = " minute(s) ago"
-
 			} else {
-				fmt.Println("Sent just now")
+				c.TimePost = 0
+				c.TmieType = "just now"
 			}
 
 			if err != nil {
@@ -187,6 +180,7 @@ ORDER BY
 		}
 		rows2.Close()
 
+		// Get like/dislike information
 		db.DB.QueryRow("SELECT likedislike FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
@@ -194,9 +188,8 @@ ORDER BY
 
 		if p.LikeDislike == "true" {
 			p.Colorlike = "blue"
-		}
-		if p.LikeDislike == "false" {
-			p.Colorlike = "red"
+		} else if p.LikeDislike == "false" {
+			p.ColorDislike = "red"
 		}
 
 		p.Commenters = comments
@@ -229,8 +222,6 @@ ORDER BY
 		}
 	}
 	allCategories = dedupedCategories
-
-	fmt.Println("categories: ", allCategories)
 
 	data := Alldata{
 		Posts:            posts,
