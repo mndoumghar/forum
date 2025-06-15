@@ -6,9 +6,9 @@ import (
 	"net/http"
 )
 
-// ErrorHandler renders the error.html template with a custom message and status code.
-func ErrorHandler(w http.ResponseWriter, statusCode int, msg string, err error) {
+func ErrorHandler(w http.ResponseWriter, statusCode int, msg string, indecator string) {
 	w.WriteHeader(statusCode)
+
 	tmpl, tmplErr := template.ParseFiles("templates/error.html")
 	if tmplErr != nil {
 		log.Println("Template parsing error:", tmplErr)
@@ -17,10 +17,14 @@ func ErrorHandler(w http.ResponseWriter, statusCode int, msg string, err error) 
 	}
 	data := struct {
 		Error_message string
-		Status string
+		Status        string
+		statusCode    int
+		indec         string
 	}{
 		Error_message: msg,
-		Status: http.StatusText(statusCode),
+		Status:        http.StatusText(statusCode),
+		statusCode:    statusCode,
+		indec:         indecator,
 	}
 	tmpl.Execute(w, data)
 }

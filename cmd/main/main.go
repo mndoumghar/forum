@@ -31,7 +31,7 @@ func main() {
 		// Ensure it doesn't point to a directory or nested malformed file path
 		info, err := os.Stat(fullPath)
 		if err != nil || info.IsDir() {
-			handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", nil)
+			handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", "")
 			return
 		}
 
@@ -44,7 +44,7 @@ func main() {
 			http.Redirect(w, r, "/posts", http.StatusSeeOther)
 			return
 		}
-		handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", nil)
+		handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", "")
 	})
 
 	fmt.Println("server started at :8080\nVisit http://localhost:8080 to access the forum.")

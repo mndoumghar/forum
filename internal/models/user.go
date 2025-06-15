@@ -17,3 +17,10 @@ type ErrorRegister struct {
 type Data struct {
 	ErrorColor []ErrorRegister
 }
+
+
+type FormErrors struct {
+	UsernameError string
+	EmailError    string
+	PasswordError string
+}

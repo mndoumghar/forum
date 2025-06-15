@@ -20,20 +20,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
-	Data := models.Data{
-		ErrorColor: []models.ErrorRegister{
-			{Error: "Email already taken", Color: "red"},
-			{Error: "Username must be at least 5 characters", Color: "red"},
-			{Error: "Password must be at least 6 characters", Color: "red"},
-			{Error: "Email must be at least 6 characters", Color: "red"},
-			{Error: "Registration successful", Color: "green"},
-			{Error: "", Color: ""},
-		},
-	}
+
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/register.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
 			return
 		}
 		tmpl.Execute(w, nil)
@@ -41,51 +32,60 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodPost {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", "")
 		return
 	}
 
+	formErrors := &models.FormErrors{}
 	email := r.FormValue("email")
-	if !utils.ValidateEmail(email) {
-		ErrorHandler(w, http.StatusNotAcceptable, "invalid email format", nil)
-		return
-	}
 	username := r.FormValue("username")
-	if !utils.ValidateUsername(username) {
-		ErrorHandler(w, http.StatusNotAcceptable, "invalid username", nil)
-		return
-	}
 	password := r.FormValue("password")
+	hasError := false
+
+	if !utils.ValidateEmail(email) {
+		formErrors.EmailError = "Invalid email format"
+		hasError = true
+	}
+
+	if !utils.ValidateUsername(username) {
+		formErrors.UsernameError = "Username must be between 4-20 characters and contain only letters, numbers, and underscores"
+		hasError = true
+	}
+
 	if !utils.ValidatePassword(password) {
-		ErrorHandler(w, http.StatusNotAcceptable, "invalid password", nil)
-		return
+		formErrors.PasswordError = "Password must be between 4-20 characters"
+		hasError = true
 	}
-	
+
+	// Check if email/username already exists
 	if _, err := db.GetUserByEmailUsername(email); err == nil {
-		tmpl, _ := template.ParseFiles("templates/register.html")
-		// error.Error =  "Email already taken"
-		tmpl.Execute(w, Data.ErrorColor[0])
-		return
-		// http.Error(w, "Email already taken", http.StatusBadRequest)
-		// return
+		formErrors.EmailError = "Email already taken"
+		hasError = true
 	}
-	//    transfer passwordd to Hash password
+
+	if hasError {
+		tmpl, _ := template.ParseFiles("templates/register.html")
+		tmpl.Execute(w, formErrors)
+		return
+	}
+
+	// Hash password
 	hashedPw, err := utils.HashPassword(password)
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
 		return
 	}
-	// insert All my Information From Data
+
+	// Insert user into database
 	_, err = db.DB.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
 		email, username, hashedPw)
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Registration failed, Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Registration failed, Please try again later.", "")
 		return
 	}
 
-	tmpl, _ := template.ParseFiles("templates/register.html")
-
-	tmpl.Execute(w, Data.ErrorColor[1])
+	// Redirect to login page after successful registration
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 // Login Page if Exist Your Information
@@ -109,7 +109,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
 			return
 		}
 
@@ -118,7 +118,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodPost {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", "")
 		return
 	}
 
@@ -129,7 +129,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
 			return
 		}
 		tmpl.Execute(w, Data.ErrorColor[0])
@@ -140,20 +140,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
 			return
 		}
-		tmpl.Execute(w, Data.ErrorColor[1])
+		tmpl.Execute(w, Data.ErrorColor[0])
 		
 
-	http.Redirect(w, r, "/posts", http.StatusSeeOther)
-
-
-
-
-
-
-
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 
 		return
 	}
@@ -163,7 +156,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		/// Erro If Not Data Session Noty Working
 		fmt.Println("Error Session Is Not Staritng")
-		ErrorHandler(w, http.StatusInternalServerError, "Session error, Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Session error, Please try again later.", "")
 		return
 	}
 
