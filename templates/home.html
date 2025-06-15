@@ -35,19 +35,19 @@
 <body>
 
     <form method="get" action="/posts">
-      <label for="category">Filter by category:</label>
-      <select id="category" name="category">
-        <option value="">-- All Categories --</option>
-        {{ range .AllCategories }}
-          <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
-        {{ end }}
-      </select>
-      <button type="submit">Filter</button>
+        <label for="category">Filter by category:</label>
+        <select id="category" name="category">
+            <option value="">-- All Categories --</option>
+            {{ range .AllCategories }}
+            <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
+            {{ end }}
+        </select>
+        <button type="submit">Filter</button>
     </form>
 
 
 
-   
+
 
 
 
@@ -57,12 +57,12 @@
             <div class="post-card">
                 <div class="post-categories left-categories">
                     {{ range .LeftCategories }}
-                        <span class="category-badge">{{ . }}</span>
+                    <span class="category-badge">{{ . }}</span>
                     {{ end }}
                 </div>
                 <div class="post-categories right-categories">
                     {{ range .RightCategories }}
-                        <span class="category-badge">{{ . }}</span>
+                    <span class="category-badge">{{ . }}</span>
                     {{ end }}
                 </div>
                 <div class="post-header">
@@ -75,22 +75,22 @@
                     <span class="content">
                         <h1>{{ .Content }}</h1>
                     </span>
-  
+
                 </div>
-                 <span>
-  <form action="/likedislike" method="GET" class="like-dislike-form">
-    <input type="hidden" name="post_id" value="{{ .Post_id }}">
-    <button value="false" name="likedislike" class="btn dislike-btn" type="submit">
-      <p>{{ .CountUserDislike }}</p>
-      <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-    </button>
-    <button value="true" name="likedislike" class="btn like-btn" type="submit">
-      <p>{{ .CountUserlike }}</p>
-      <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-    </button>
-    <input type="hidden" name="" id="" value="{{.LikeDislike }}">
-  </form>
-</span>
+                <span>
+                    <form action="/likedislike" method="GET" class="like-dislike-form">
+                        <input type="hidden" name="post_id" value="{{ .Post_id }}">
+                        <button value="false" name="likedislike" class="btn dislike-btn" type="submit">
+                            <p>{{ .CountUserDislike }}</p>
+                            <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
+                        </button>
+                        <button value="true" name="likedislike" class="btn like-btn" type="submit">
+                            <p>{{ .CountUserlike }}</p>
+                            <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
+                        </button>
+                        <input type="hidden" name="" id="" value="{{.LikeDislike }}">
+                    </form>
+                </span>
 
                 <div class="comment-section">
                     <form action="/comment" method="GET">
@@ -102,25 +102,25 @@
                 </div>
 
                 <div class="commenters-container">
-    <button class="toggle-commenters-btn">Show Commenters</button>
-    <ul class="commenters-list hidden">
-        {{range .Commenters}}
-        <!--  Contentcomment string
-	Usercommnter string -->
-            <li> 
-                <ul>
-<h1> <a href="#">{{ .Usercommnter }}</a></h1>  {{.Contentcomment}}</li>
-                </ul>
-            
-        {{end}}
-    </ul>
-    
-</div>
+                    <button class="toggle-commenters-btn">Show Commenters</button>
+                    <ul class="commenters-list hidden">
+                        {{range .Commenters}}
+                        <!--  Contentcomment string Usercommnter string -->
+                        <li>
+                            <ul>
+                                <h1> <a href="#">{{ .Usercommnter }}</a></h1> {{.Contentcomment}}
+                        </li>
+                    </ul>
+
+                    {{end}}
+                    </ul>
+
+                </div>
 
             </div>
             {{ end }}
         </div>
-    </main> 
+    </main>
 
     <!-- Create Post Modal -->
     <div id="createPostModal" class="modal small-modal">
@@ -138,34 +138,34 @@
                 <div id="category-section" style="display: none;">
                     <label>Category:</label>
                     <div class="category-columns">
-                      <div class="category-col">
-                        <div class="el-checkbox el-checkbox-green">
-                          <input type="checkbox" name="status" id="cat1" value="Career Advice & Development">
-                          <label class="el-checkbox-style" for="cat1"></label>
-                          <span>Career Advice & Development</span>
+                        <div class="category-col">
+                            <div class="el-checkbox el-checkbox-green">
+                                <input type="checkbox" name="status" id="cat1" value="Tech">
+                                <label class="el-checkbox-style" for="cat1"></label>
+                                <span>Tech</span>
+                            </div>
+                            <div class="el-checkbox el-checkbox-green">
+                                <input type="checkbox" name="status" id="cat2" value="Jobs">
+                                <label class="el-checkbox-style" for="cat2"></label>
+                                <span>Jobs</span>
+                            </div>
+                            <div class="el-checkbox el-checkbox-green">
+                                <input type="checkbox" name="status" id="cat3" value="News">
+                                <label class="el-checkbox-style" for="cat3"></label>
+                                <span>News</span>
+                            </div>
+                            <div class="el-checkbox el-checkbox-green">
+                                <input type="checkbox" name="status" id="cat4" value="Education">
+                                <label class="el-checkbox-style" for="cat4"></label>
+                                <span>Education</span>
+                            </div>
+                            <div class="el-checkbox el-checkbox-green">
+                                <input type="checkbox" name="status" id="cat5" value="Other">
+                                <label class="el-checkbox-style" for="cat5"></label>
+                                <span>Other</span>
+                            </div>
                         </div>
-                        <div class="el-checkbox el-checkbox-green">
-                          <input type="checkbox" name="status" id="cat2" value="Job Opportunities & Networking">
-                          <label class="el-checkbox-style" for="cat2"></label>
-                          <span>Job Opportunities & Networking</span>
-                        </div>
-                        <div class="el-checkbox el-checkbox-green">
-                          <input type="checkbox" name="status" id="cat3" value="Cybersecurity">
-                          <label class="el-checkbox-style" for="cat3"></label>
-                          <span>Cybersecurity</span>
-                        </div>
-                        <div class="el-checkbox el-checkbox-green">
-                          <input type="checkbox" name="status" id="cat4" value="Networking & Infrastructure">
-                          <label class="el-checkbox-style" for="cat4"></label>
-                          <span>Networking & Infrastructure</span>
-                        </div>
-                        <div class="el-checkbox el-checkbox-green">
-                          <input type="checkbox" name="status" id="cat5" value="Project Management">
-                          <label class="el-checkbox-style" for="cat5"></label>
-                          <span>Project Management</span>
-                        </div>
-                      </div>
-                      
+
                     </div>
                 </div>
                 <button type="submit">Submit</button>
@@ -174,22 +174,20 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var toggleBtn = document.getElementById('toggleCategoryBtn');
-        var categorySection = document.getElementById('category-section');
-        if (toggleBtn && categorySection) {
-            toggleBtn.addEventListener('click', function() {
-                if (categorySection.style.display === "none") {
-                    categorySection.style.display = "";
-                } else {
-                    categorySection.style.display = "none";
-                }
-            });
-        }
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            var toggleBtn = document.getElementById('toggleCategoryBtn');
+            var categorySection = document.getElementById('category-section');
+            if (toggleBtn && categorySection) {
+                toggleBtn.addEventListener('click', function () {
+                    if (categorySection.style.display === "none") {
+                        categorySection.style.display = "";
+                    } else {
+                        categorySection.style.display = "none";
+                    }
+                });
+            }
+        });
     </script>
-
-
-
 </body>
+
 </html>

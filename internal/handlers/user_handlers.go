@@ -24,7 +24,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/register.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 			return
 		}
 		tmpl.Execute(w, nil)
@@ -32,7 +32,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodPost {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed", "Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", nil)
 		return
 	}
 	// Definier Variable
@@ -54,14 +54,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	//    transfer passwordd to Hash password
 	hashedPw, err := utils.HashPassword(password)
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Internal server error", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 		return
 	}
 	// insert All my Information From Data
 	_, err = db.DB.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
 		email, username, hashedPw)
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Registration failed", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Registration failed, Please try again later.", err)
 		return
 	}
 
@@ -85,7 +85,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 			return
 		}
 
@@ -94,7 +94,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodPost {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed", "Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", nil)
 		return
 	}
 
@@ -112,7 +112,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 			return
 		}
 		tmpl.Execute(w, Data.ErrorColor[0])
@@ -123,7 +123,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 			return
 		}
 		tmpl.Execute(w, Data.ErrorColor[0])
@@ -135,7 +135,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		/// Erro If Not Data Session Noty Working
 		fmt.Println("Error Session Is Not Staritng")
-		ErrorHandler(w, http.StatusInternalServerError, "Session error", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Session error, Please try again later.", err)
 		return
 	}
 

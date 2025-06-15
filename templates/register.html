@@ -1,12 +1,9 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Register Page</title>
     <style> 
         #bg-video {
             position: fixed;
@@ -113,22 +110,16 @@
     </style>
 </head>
 <body>
-        <!-- Animated video background -->
-    <video autoplay muted loop id="bg-video">
-      <source src="/static/animated.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
 <div class="main">
     <div class="container">
        
-
         <form action="/register" method="POST" class="login-form">
             <h1>Forum Sign Up</h1>
             
             <div class="input-group">
 
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" >
+                <input type="text" id="username" name="username" minlength="4" maxlength="20">
             </div>
             <div class="input-group">
                 <label for="email">Email</label>
@@ -144,14 +135,9 @@
                 <a href="/login">Log_in</a>
 
                 <div id="error">
-                    <p style="color:{{.Color}};">{{.Error}}</p>
+                    <p style>{{.Error}}</p>
                 </div>
                 
-                
-
-                
-
-               
             </div>
         </form>
        

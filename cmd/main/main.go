@@ -48,16 +48,11 @@ func main() {
 	})
 
 	categories := []string{
-		"Career Advice & Development",
-		"Job Opportunities & Networking",
-		"Cybersecurity",
-		"Networking & Infrastructure",
-		"Project Management",
-		"Industry News & Updates",
-		"Technical Discussions",
-		"Mathematics & Data Science",
-		"Soft Skills & Communication",
-		"Leadership & Management",
+		"Tech",
+		"News",
+		"Education",
+		"Jobs",
+		"Other",
 	}
 
 	dbConn, err := db.GetDBConnection() // Assuming GetDBConnection() returns the database connection

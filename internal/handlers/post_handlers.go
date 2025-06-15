@@ -28,7 +28,7 @@ type Post struct {
 
 type DataComment struct {
 	Contentcomment string
-	Usercommnter string
+	Usercommnter   string
 }
 
 type PostWithUser struct {
@@ -74,12 +74,12 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.QueryRow("SELECT username FROM users WHERE user_id = ? ", user_id).Scan(&user.Usernameprofil)
 
 	if r.Method != http.MethodGet {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed", "Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed, Please use the correct HTTP method.", nil)
 		return
 	}
 
 	// Category filtering logic
-	selectedCategory := r.URL.Query().Get("category")
+	selectedCategory := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("category")))
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -102,7 +102,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			JOIN
 				category c ON p.post_id = c.post_id
 			WHERE
-				c.status = ?`, selectedCategory)
+				LOWER(TRIM(c.status)) = ?`, selectedCategory)
 	} else {
 		rows, err = db.DB.Query(`
 			SELECT 
@@ -118,7 +118,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Error fetching post data", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Error fetching post data, Please try again later.", err)
 		return
 	}
 	defer rows.Close()
@@ -136,13 +136,13 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		rows2, err := db.DB.Query(`SELECT content,username FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
-			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments, Please try again later.", err)
 			return
 		}
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
-			err = rows2.Scan(&c.Contentcomment,&c.Usercommnter)
+			err = rows2.Scan(&c.Contentcomment, &c.Usercommnter)
 			if err != nil {
 				log.Printf("Error scanning comment: %v", err)
 				continue
@@ -187,259 +187,36 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error iterating posts: %v", err)
 	}
 
+	// Deduplicate allCategories
+	uniqueCategories := make(map[string]struct{})
+	dedupedCategories := []string{}
+	for _, cat := range allCategories {
+		if _, exists := uniqueCategories[cat]; !exists {
+			uniqueCategories[cat] = struct{}{}
+			dedupedCategories = append(dedupedCategories, cat)
+		}
+	}
+	allCategories = dedupedCategories
+
+	fmt.Println("categories: ", allCategories)
+
 	data := Alldata{
 		Posts:            posts,
 		Username:         user.Usernameprofil,
 		AllCategories:    allCategories,
 		SelectedCategory: selectedCategory,
 	}
-
-	fmt.Println("Data : ", allCategories)
-
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", err)
 		return
 	}
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "Please try again later.", err)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", err)
 		return
 	}
 }
-
-// func MyPostsHandler(w http.ResponseWriter, r *http.Request) {
-// 	user_id, _ := auth.CheckSession(w, r)
-// 	var username string
-// 	err := db.DB.QueryRow("SELECT username FROM users WHERE user_id = ?", user_id).Scan(&username)
-// 	if err != nil {
-// 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-// 		return
-// 	}
-
-// 	rows, err := db.DB.Query(`
-// 		SELECT p.post_id, u.username, p.content, p.status, p.created_at
-// 		FROM posts p
-// 		JOIN users u ON p.user_id = u.user_id
-// 		WHERE p.user_id = ?
-// 	`, user_id)
-// 	if err != nil {
-// 		http.Error(w, "Database error", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	defer rows.Close()
-
-// 	renderPosts(w, r, rows, username, "")
-// }
-
-// func MyLikedPostsHandler(w http.ResponseWriter, r *http.Request) {
-// 	user_id, _ := auth.CheckSession(w, r)
-// 	var username string
-// 	err := db.DB.QueryRow("SELECT username FROM users WHERE user_id = ?", user_id).Scan(&username)
-// 	if err != nil {
-// 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-// 		return
-// 	}
-
-// 	rows, err := db.DB.Query(`
-// 		SELECT p.post_id, u.username, p.content, p.status, p.created_at
-// 		FROM posts p
-// 		JOIN users u ON p.user_id = u.user_id
-// 		JOIN likedislike l ON p.post_id = l.post_id
-// 		WHERE l.user_id = ? AND l.likedislike = 'true'
-// 	`, user_id)
-// 	if err != nil {
-// 		http.Error(w, "Database error", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	defer rows.Close()
-
-// 	renderPosts(w, r, rows, username, "")
-// }
-
-// func renderPosts(w http.ResponseWriter, r *http.Request, rows *sql.Rows, username, selectedCategory string) { // helper function
-// 	var posts []PostWithUser
-// 	user_id, _ := auth.CheckSession(w, r)
-
-// 	allCategories, _ := models.GetalldistCat(db.DB)
-
-// 	for rows.Next() {
-// 		var p PostWithUser
-// 		err := rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.Status, &p.CreatedAt)
-// 		if err != nil {
-// 			continue
-// 		}
-
-// 		// Comments
-// 		rows2, _ := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
-// 		var comments []DataComment
-// 		for rows2.Next() {
-// 			var c DataComment
-// 			_ = rows2.Scan(&c.Contentcomment)
-// 			comments = append(comments, c)
-// 		}
-// 		rows2.Close()
-// 		p.Commenters = comments
-
-// 		// Likes & Dislikes
-// 		db.DB.QueryRow("SELECT likedislike FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and user_id = ?", p.Post_id, user_id).Scan(&p.ColorValue)
-
-// 		if p.LikeDislike == "true" {
-// 			p.Colorlike = "blue"
-// 		} else if p.LikeDislike == "false" {
-// 			p.Colorlike = "red"
-// 		}
-
-// 		// Split categories
-// 		statusList := []string{}
-// 		for _, s := range strings.Split(p.Status, ",") {
-// 			s = strings.TrimSpace(s)
-// 			if s != "" {
-// 				statusList = append(statusList, s)
-// 			}
-// 		}
-// 		left, right := splitCategories(statusList)
-// 		p.LeftCategories = left
-// 		p.RightCategories = right
-
-// 		posts = append(posts, p)
-// 	}
-
-// 	data := Alldata{
-// 		Posts:            posts,
-// 		Username:         username,
-// 		AllCategories:    allCategories,
-// 		SelectedCategory: selectedCategory,
-// 	}
-
-// 	tmpl, err := template.ParseFiles("templates/home.html")
-// 	if err != nil {
-// 		http.Error(w, "Template error", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	tmpl.Execute(w, data)
-// }
-
-// Additional filter function if you need a separate endpoint
-// func FilterByCategory(w http.ResponseWriter, r *http.Request) {
-// 	user_id, _ := auth.CheckSession(w, r)
-//
-// 	// Get username for displaying in template
-// 	var user User
-// 	err := db.DB.QueryRow("SELECT username FROM users WHERE user_id = ?", user_id).Scan(&user.Usernameprofil)
-// 	if err != nil {
-// 		log.Printf("Error getting username: %v", err)
-// 	}
-
-// 	category := r.URL.Query().Get("category")
-
-// 	// Get all categories for filter dropdown
-// 	allCategories, err := models.GetalldistCat(db.DB)
-// 	if err != nil {
-// 		log.Printf("Error fetching categories: %v", err)
-// 		allCategories = []string{}
-// 	}
-
-// 	// Filter query (notice we're joining category table to filter by status)
-// 	rows, err := db.DB.Query(`
-// 		SELECT p.post_id, u.username, p.content, p.status, p.created_at
-// 		FROM posts p
-// 		JOIN users u ON p.user_id = u.user_id
-// 		JOIN category c ON p.post_id = c.post_id
-// 		WHERE c.status = ?`, category)
-// 	if err != nil {
-// 		log.Printf("Error querying filtered posts: %v", err)
-// 		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
-// 		return
-// 	}
-// 	defer rows.Close()
-
-// 	var posts []PostWithUser
-
-// 	for rows.Next() {
-// 		var p PostWithUser
-// 		err = rows.Scan(&p.Post_id, &p.Username, &p.Content, &p.Status, &p.CreatedAt)
-// 		if err != nil {
-// 			log.Printf("Error scanning row: %v", err)
-// 			continue
-// 		}
-
-// 		// Fetch comments for each post
-// 		rows2, err := db.DB.Query(`SELECT content FROM comments WHERE post_id = ?`, p.Post_id)
-// 		if err != nil {
-// 			log.Printf("Error querying comments: %v", err)
-// 			continue
-// 		}
-// 		var comments []DataComment
-// 		for rows2.Next() {
-// 			var c DataComment
-// 			err = rows2.Scan(&c.Contentcomment)
-// 			if err != nil {
-// 				log.Printf("Error scanning comment: %v", err)
-// 				continue
-// 			}
-// 			comments = append(comments, c)
-// 		}
-// 		rows2.Close()
-// 		p.Commenters = comments
-
-// 		// Likes / Dislikes logic (same as your existing handler)
-// 		db.DB.QueryRow("SELECT likedislike FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
-// 		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and user_id = ?", p.Post_id, user_id).Scan(&p.ColorValue)
-
-// 		if p.LikeDislike == "true" {
-// 			p.Colorlike = "blue"
-// 		} else if p.LikeDislike == "false" {
-// 			p.Colorlike = "red"
-// 		}
-
-// 		// Split categories
-// 		statusList := []string{}
-// 		for _, s := range strings.Split(p.Status, ",") {
-// 			s = strings.TrimSpace(s)
-// 			if s != "" {
-// 				statusList = append(statusList, s)
-// 			}
-// 		}
-// 		left, right := splitCategories(statusList)
-// 		p.LeftCategories = left
-// 		p.RightCategories = right
-
-// 		posts = append(posts, p)
-// 	}
-
-// 	if err = rows.Err(); err != nil {
-// 		log.Printf("Error iterating posts: %v", err)
-// 	}
-
-// 	// Build the data for template
-// 	data := Alldata{
-// 		Posts:            posts,
-// 		Username:         user.Usernameprofil,
-// 		AllCategories:    allCategories,
-// 		SelectedCategory: category,
-// 	}
-
-// 	// Render home.html
-// 	tmpl, err := template.ParseFiles("templates/home.html")
-// 	if err != nil {
-// 		log.Printf("Error parsing template: %v", err)
-// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	err = tmpl.Execute(w, data)
-// 	if err != nil {
-// 		log.Printf("Error executing template: %v", err)
-// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-// 		return
-// 	}
-// }

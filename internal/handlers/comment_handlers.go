@@ -14,7 +14,7 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodGet {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Failed to add comment, ", "Please try again later.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Failed to add comment, Please try again later.", nil)
 		return
 	}
 	if r.Method == http.MethodGet {
@@ -26,7 +26,7 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Failed to add comment", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Failed to add comment, Please try again later.", err)
 			return
 		}
 

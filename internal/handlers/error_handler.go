@@ -7,7 +7,7 @@ import (
 )
 
 // ErrorHandler renders the error.html template with a custom message and status code.
-func ErrorHandler(w http.ResponseWriter, statusCode int, msg1, msg2 string, err error) {
+func ErrorHandler(w http.ResponseWriter, statusCode int, msg string, err error) {
 	w.WriteHeader(statusCode)
 	tmpl, tmplErr := template.ParseFiles("templates/error.html")
 	if tmplErr != nil {
@@ -19,7 +19,7 @@ func ErrorHandler(w http.ResponseWriter, statusCode int, msg1, msg2 string, err 
 		Error_message string
 		Status string
 	}{
-		Error_message: msg1 + " " + msg2 + " ",
+		Error_message: msg,
 		Status: http.StatusText(statusCode),
 	}
 	tmpl.Execute(w, data)

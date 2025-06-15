@@ -30,7 +30,7 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method != http.MethodGet {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed", "Please use the correct HTTP method.", nil)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed, Please use the correct HTTP method.", nil)
 		return
 	}
 	if r.Method == http.MethodGet {
@@ -43,7 +43,7 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		// Checxk FRom Databnase How much line
 		u, err := db.GetLikeDisle(user_id, post_id)
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Failed to get like/dislike info", "Please try again later.", err)
+			ErrorHandler(w, http.StatusInternalServerError, "Failed to get like/dislike info, Please try again later.", err)
 			return
 		}
 
@@ -58,14 +58,14 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		if u.Count > 0 {
 			err = db.DeleteIdUserikeDislike(user_id, post_id)
 			if err != nil {
-				ErrorHandler(w, http.StatusInternalServerError, "Failed to update like/dislike", "Please try again later.", err)
+				ErrorHandler(w, http.StatusInternalServerError, "Failed to update like/dislike, Please try again later.", err)
 				return
 			}
 		} else {
 
 			_, err = db.DB.Exec("INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)", user_id, post_id, likedislike)
 			if err != nil {
-				ErrorHandler(w, http.StatusInternalServerError, "Like Or Dislike failed", "Please try again later.", err)
+				ErrorHandler(w, http.StatusInternalServerError, "Like Or Dislike failed, Please try again later.", err)
 				return
 			}
 
