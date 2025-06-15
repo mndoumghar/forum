@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"forum/internal/auth"
 	"forum/internal/db"
@@ -24,7 +25,16 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
 
-		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
+		post_id_atoi, _ := strconv.Atoi(post_id)
+
+		checkPost, er := db.CheckPostId(post_id_atoi)
+
+		if er != nil {
+			ErrorHandler(w, http.StatusNotFound, "Failed to add comment, Please try again later.", er)
+			return
+		}
+
+		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, checkPost.ID, contentCommenter)
 		if err != nil {
 			ErrorHandler(w, http.StatusInternalServerError, "Failed to add comment, Please try again later.", err)
 			return

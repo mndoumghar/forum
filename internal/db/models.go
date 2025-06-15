@@ -32,8 +32,17 @@ func GetUserByEmail(email string) (*User, error) {
 	return &u, nil
 }
 
-func GetPost() (*Post, *User, error) {
+func CheckPostId(postId int) (*Post, error) {
+	var p Post
+	err := DB.QueryRow("SELECT post_id FROM posts WHERE post_id = ?", postId).
+		Scan(&p.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
 
+func GetPost() (*Post, *User, error) {
 	var p Post
 	var u User
 	// Ensure you correct the column name `usernam` to `username`
@@ -82,17 +91,14 @@ func UpdateLikeDislike(user_id int, post_id string, Like string) error {
 		}
 	}
 	return nil
-
 }
 
 func DeleteIdUserikeDislike(user_id int, post_id string) error {
-
 	_, err := DB.Exec("DELETE FROM likedislike WHERE user_id = ? AND post_id = ?", user_id, post_id)
 	if err != nil {
 		return err
 	}
 	return err
-
 }
 
 /*
