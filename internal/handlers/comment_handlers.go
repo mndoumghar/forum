@@ -2,23 +2,20 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"forum/internal/auth"
 	"forum/internal/db"
 )
 
 func CommentHandler(w http.ResponseWriter, r *http.Request) {
-
 	user_id, err := auth.CheckSession(w, r)
-
-
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-
 	}
 
 	if r.Method != http.MethodGet {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Failed to add comment, Please try again later.", nil)
 		return
 	}
 	if r.Method == http.MethodGet {
@@ -28,10 +25,18 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
 
-		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, post_id, contentCommenter)
-		if err != nil {
+		post_id_atoi, _ := strconv.Atoi(post_id)
 
-			http.Error(w, "Registration fvailed", http.StatusInternalServerError)
+		checkPost, er := db.CheckPostId(post_id_atoi)
+
+		if er != nil {
+			ErrorHandler(w, http.StatusNotFound, "Failed to add comment, Please try again later.", er)
+			return
+		}
+
+		_, err := db.DB.Exec("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)", user_id, checkPost.ID, contentCommenter)
+		if err != nil {
+			ErrorHandler(w, http.StatusInternalServerError, "Failed to add comment, Please try again later.", err)
 			return
 		}
 
