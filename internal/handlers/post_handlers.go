@@ -28,7 +28,7 @@ type Post struct {
 
 type DataComment struct {
 	Contentcomment string
-	Usercommnter   string
+	Usercommnter string
 }
 
 type PostWithUser struct {
@@ -59,7 +59,9 @@ type Alldata struct {
 	AllCategories    []string
 	SelectedCategory string
 	Cate string
-	Cate2 string
+}
+type Category struct {
+	Status string
 }
 
 // Helper to split categories into two slices
@@ -76,12 +78,12 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	db.DB.QueryRow("SELECT username FROM users WHERE user_id = ? ", user_id).Scan(&user.Usernameprofil)
 
 	if r.Method != http.MethodGet {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed, Please use the correct HTTP method.", nil)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// Category filtering logic
-	selectedCategory := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("category")))
+	selectedCategory := r.URL.Query().Get("category")
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -90,6 +92,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var rows *sql.Rows
 	if selectedCategory != "" {
+		likePattern := "%" + selectedCategory + "%"
 		rows, err = db.DB.Query(`
 			SELECT
 				p.post_id,
@@ -101,30 +104,24 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 				posts p
 			JOIN
 				users u ON p.user_id = u.user_id
-			JOIN
-				category c ON p.post_id = c.post_id
 			WHERE
-				LOWER(TRIM(c.status)) = ?`, selectedCategory)
+				p.status LIKE ?`, likePattern)
 	} else {
 		rows, err = db.DB.Query(`
 			SELECT 
-    p.post_id, 
-    u.username, 
-    p.content,
-    p.status, 
-    p.created_at 
-FROM 
-    posts p
-JOIN 
-    users u ON p.user_id = u.user_id
-ORDER BY 
-    p.created_at DESC
-				
-				`)
+				p.post_id, 
+				u.username, 
+				p.content,
+				p.status, 
+				p.created_at 
+			FROM 
+				posts p
+			JOIN 
+				users u ON p.user_id = u.user_id`)
 	}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Error fetching post data, Please try again later.", err)
+		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -139,10 +136,10 @@ ORDER BY
 		}
 
 		// Fetch comments
-		rows2, err := db.DB.Query(`SELECT content,username FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
+		rows2, err := db.DB.Query(`SELECT content, username FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ?`, p.Post_id)
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
-			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments, Please try again later.", err)
+			http.Error(w, "Error fetching comments", http.StatusInternalServerError)
 			return
 		}
 		var comments []DataComment
@@ -193,38 +190,27 @@ ORDER BY
 		log.Printf("Error iterating posts: %v", err)
 	}
 
-	// Deduplicate allCategories
-	uniqueCategories := make(map[string]struct{})
-	dedupedCategories := []string{}
-	for _, cat := range allCategories {
-		if _, exists := uniqueCategories[cat]; !exists {
-			uniqueCategories[cat] = struct{}{}
-			dedupedCategories = append(dedupedCategories, cat)
-		}
-	}
-	allCategories = dedupedCategories
-
-	fmt.Println("categories: ", allCategories)
-
 	data := Alldata{
 		Posts:            posts,
 		Username:         user.Usernameprofil,
 		AllCategories:    allCategories,
 		SelectedCategory: selectedCategory,
-		Cate : selectedCategory,
-		Cate2: "Category",
+		Cate: selectedCategory,
 	}
+
+	fmt.Println("Data : ", allCategories)
+
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 }

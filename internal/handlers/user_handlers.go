@@ -133,7 +133,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", err)
 			return
 		}
-		tmpl.Execute(w, Data.ErrorColor[0])
+		tmpl.Execute(w, Data.ErrorColor[1])
 		
 
 	http.Redirect(w, r, "/posts", http.StatusSeeOther)
