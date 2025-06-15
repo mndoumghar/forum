@@ -58,6 +58,8 @@ type Alldata struct {
 	Username         string
 	AllCategories    []string
 	SelectedCategory string
+	Cate string
+	Cate2 string
 }
 
 // Helper to split categories into two slices
@@ -209,6 +211,8 @@ ORDER BY
 		Username:         user.Usernameprofil,
 		AllCategories:    allCategories,
 		SelectedCategory: selectedCategory,
+		Cate : selectedCategory,
+		Cate2: "Category",
 	}
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {

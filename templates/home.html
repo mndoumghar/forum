@@ -610,6 +610,8 @@
         <form method="get" action="/posts">
             <label for="category">Filter by category:</label>
             <select id="category" name="category">
+         <option value="">{{.Cate}}</option>
+
                <option value="sport">Sport</option>
                <option value="jobs">Jobs</option>
                <option value="news">News</option>

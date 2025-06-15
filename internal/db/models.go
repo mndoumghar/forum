@@ -43,17 +43,6 @@ func GetUserByEmail(email string) (*User, error) {
 	return &u, nil
 }
 
-<<<<<<< HEAD
-func CheckPostId(postId int) (*Post, error) {
-	var p Post
-	err := DB.QueryRow("SELECT post_id FROM posts WHERE post_id = ?", postId).
-		Scan(&p.ID)
-	if err != nil {
-		return nil, err
-	}
-	return &p, nil
-}
-=======
 
 func GetUserByEmailUsername(email string) (*User, error) {
 	var u User
@@ -64,9 +53,6 @@ func GetUserByEmailUsername(email string) (*User, error) {
 	}
 	return &u, nil
 }
-
-func GetPost() (*Post, *User, error) {
->>>>>>> mndoumghar
 
 func GetPost() (*Post, *User, error) {
 	var p Post
