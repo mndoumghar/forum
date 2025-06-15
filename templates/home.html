@@ -537,6 +537,106 @@
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
+        /* Comments Toggle Styles */
+        .comments-toggle-input {
+            display: none;
+        }
+
+        .comments-toggle-btn {
+            display: inline-block;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            user-select: none;
+            margin-top: 1rem;
+        }
+
+        .comments-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .comments-toggle-btn::after {
+            content: " Comments";
+        }
+
+        .comments-toggle-input:checked + .comments-toggle-btn::after {
+            content: " Comments (Hide)";
+        }
+
+        .comments-container {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-toggle-input:checked ~ .comments-container {
+            display: block;
+        }
+
+        .comments-container h3 {
+            margin-bottom: 1rem;
+            color: #e6e6e6;
+            font-size: 1.1rem;
+        }
+
+        .comment-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comment-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            border: 2px solid #4f46e5;
+        }
+
+        .comment-author {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .comment-author strong {
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comment-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .comment-body p {
+            color: #e0e6ed;
+            line-height: 1.5;
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
             .navbar {
                 padding: 1rem;
@@ -571,16 +671,6 @@
                 min-width: unset;
             }
         }
-
-
-        
-
-
-
-
-
-
-
     </style>
     <script defer src="/static/script.js"></script>
 </head>
@@ -610,15 +700,12 @@
         <form method="get" action="/posts">
             <label for="category">Filter by category:</label>
             <select id="category" name="category">
-         <option value="">{{.Cate}}</option>
-
                <option value="sport">Sport</option>
                <option value="jobs">Jobs</option>
                <option value="news">News</option>
                <option value="movies">Movies</option>
                <option value="tech">Tech</option>
                <option value="other">Other</option>
-                
             </select>
             <button type="submit">Filter</button>
         </form>
@@ -674,24 +761,36 @@
                     </form>
                 </div>
 
-                <div class="commenters-container">
-                    <button class="toggle-commenters-btn">Show Commenters</button>
-                    <ul class="commenters-list hidden">
-                        {{range .Commenters}}
-                        <li>
-                            <ul>
-                                <h1> <a href="#">{{ .Usercommnter }}</a></h1> {{.Contentcomment}}
-                            </ul>
-                        </li>
-                        {{end}}
-                    </ul>
+                <!-- Comments Toggle Section -->
+                <input type="checkbox" id="comments-toggle-{{ .Post_id }}" class="comments-toggle-input">
+                <label for="comments-toggle-{{ .Post_id }}" class="comments-toggle-btn">
+                    <i class="fa fa-comments"></i>Show
+                </label>
+                
+                <div class="comments-container">
+                    <h3>Comments</h3>
+                    {{range .Commenters}}
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <img src="/static/defaultAV.png" alt="User Avatar" class="comment-avatar">
+                            <div class="comment-author">
+                                <strong>{{.Usercommnter}}</strong>
+                                <span class="comment-date">a few seconds ago</span>
+                            </div>
+                        </div>
+                        <div class="comment-body">
+                            <p>{{.Contentcomment}}</p>
+                        </div>
+                    </div>
+                    {{else}}
+                    <p>No comments yet. Be the first to comment!</p>
+                    {{end}}
                 </div>
             </div>
             {{ end }}
         </div>
     </main>
 
-    
     <div id="createPostModal" class="modal small-modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
@@ -705,40 +804,40 @@
                     Show/Hide Categories
                 </button>
                <div id="category-section" style="display: none;">
-    <label>Category:</label>
-    <div class="category-buttons">
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="tech">
-            <i class="fas fa-microchip"></i>
-            <span>Tech</span>
-        </label>
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="jobs">
-            <i class="fas fa-briefcase"></i>
-            <span>Jobs</span>
-        </label>
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="news">
-            <i class="fas fa-newspaper"></i>
-            <span>News</span>
-        </label>
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="movies">
-            <i class="fas fa-film"></i>
-            <span>Movies</span>
-        </label>
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="sport">
-            <i class="fas fa-basketball-ball"></i>
-            <span>Sport</span>
-        </label>
-        <label class="category-btn">
-            <input type="checkbox" name="status" value="other">
-            <i class="fas fa-ellipsis-h"></i>
-            <span>Other</span>
-        </label>
-    </div>
-</div>
+                    <label>Category:</label>
+                    <div class="category-buttons">
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="tech">
+                            <i class="fas fa-microchip"></i>
+                            <span>Tech</span>
+                        </label>
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="jobs">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Jobs</span>
+                        </label>
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="news">
+                            <i class="fas fa-newspaper"></i>
+                            <span>News</span>
+                        </label>
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="movies">
+                            <i class="fas fa-film"></i>
+                            <span>Movies</span>
+                        </label>
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="sport">
+                            <i class="fas fa-basketball-ball"></i>
+                            <span>Sport</span>
+                        </label>
+                        <label class="category-btn">
+                            <input type="checkbox" name="status" value="other">
+                            <i class="fas fa-ellipsis-h"></i>
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
 
                 <button type="submit">Submit</button>
             </form>
@@ -761,22 +860,23 @@
         });
     </script>
      <script>
-// Save scroll position before submitting comment forms
-document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function() {
-        localStorage.setItem('scrollPosition', window.scrollY);
-    });
-});
+        // Save scroll position before submitting comment forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const scrollY = window.scrollY;
+                // Store in a variable since localStorage is not available
+                window.tempScrollPosition = scrollY;
+            });
+        });
 
-// Restore scroll position after page reload
-window.addEventListener('load', function() {
-    const scrollY = localStorage.getItem('scrollPosition');
-    if (scrollY !== null) {
-        window.scrollTo(0, parseInt(scrollY));
-        localStorage.removeItem('scrollPosition');
-    }
-});
-</script>
+        // Restore scroll position after page reload
+        window.addEventListener('load', function() {
+            if (window.tempScrollPosition !== undefined) {
+                window.scrollTo(0, window.tempScrollPosition);
+                delete window.tempScrollPosition;
+            }
+        });
+    </script>
 </body>
 
 </html>
