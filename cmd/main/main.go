@@ -27,7 +27,6 @@ func main() {
 	//http.HandleFunc("/my-posts", handlers.MyPostsHandler)
 	//http.HandleFunc("/my-likes", handlers.MyLikedPostsHandler)
 
-	
 	//	http.HandleFunc("/comment", handlers.CommentHandler)
 	//	http.HandleFunc("/like", handlers.LikeHandler)
 

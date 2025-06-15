@@ -5,51 +5,607 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Forum</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="/static/checkbox.css">
-    <link rel="stylesheet" href="/static/categories-sides.css">
     <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .username {
+            color: #e0e6ed;
+            font-weight: 500;
+        }
+
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #4f46e5;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .create-post-btn {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+
+        .create-post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .login-btn, .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e6ed;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-btn:hover, .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-section {
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-section label {
+            color: #e0e6ed;
+            font-weight: 500;
+        }
+
+        .filter-section select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .filter-section button {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-section button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed, #ec4899);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .left-categories, .right-categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .left-categories {
+            justify-content: flex-start;
+        }
+
+        .right-categories {
+            justify-content: flex-end;
+        }
+
+        .category-badge {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .post-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            flex-wrap: wrap;
+        }
+
+        .user-id {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #4f46e5;
+        }
+
+        .username-block {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .username-block .username {
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #4f46e5;
+        }
+
+        .post-date {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .content h1 {
+            font-size: 1.3rem;
+            color: #f8fafc;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0.5rem 0;
+        }
+
+        .like-dislike-form {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .like-btn, .dislike-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .like-btn:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        .dislike-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            transform: translateY(-1px);
+        }
+
+        .comment-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .comment-section form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .comment-section label {
+            color: #e0e6ed;
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .comment-section input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .comment-section input[type="text"]:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .comment-section input[type="submit"] {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .comment-section input[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .commenters-container {
+            margin-top: 1rem;
+        }
+
+        .toggle-commenters-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-commenters-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .commenters-list {
+            list-style: none;
+            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .commenters-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .commenters-list li:last-child {
+            border-bottom: none;
+        }
+
+        .commenters-list h1 {
+            font-size: 1rem;
+            color: #4f46e5;
+            margin-bottom: 0.3rem;
+        }
+
+        .commenters-list a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .commenters-list a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .small-modal .modal-content {
+            background: rgba(15, 15, 15, 0.95);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        #creatpost-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #4f46e5;
+        }
+
+        .create-post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .create-post-form label {
+            font-weight: 600;
+            color: #e0e6ed;
+        }
+
+        .create-post-form input, .create-post-form textarea {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .create-post-form input:focus, .create-post-form textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        #toggleCategoryBtn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e6ed;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #toggleCategoryBtn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .el-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .el-checkbox:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .el-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4f46e5;
+        }
+
+        .el-checkbox span {
+            color: #e0e6ed;
+            font-size: 0.9rem;
+        }
+
+        .create-post-form button[type="submit"] {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .create-post-form button[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            
+            .post-card {
+                padding: 1rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .like-dislike-form {
+                justify-content: center;
+            }
+
+            .comment-section form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .comment-section input[type="text"] {
+                min-width: unset;
+            }
+        }
+    </style>
     <script defer src="/static/script.js"></script>
 </head>
 
-<header class="navbar">
-    <div class="logo">
-        <h1><a href="/posts">Forum</a></h1>
-    </div>
-    <nav class="nav-right">
-        <div class="user-section">
-            <span class="username">{{if .Username}}{{ .Username }}{{end}}</span>
-            <img src="/static/defaultAV.png" alt="Profile Picture" class="profile-img">
-            {{if .Username}}
-            <a href="/logout" class="logout-btn">Log Out</a>
-            <button id="createPostBtn" class="btn create-post-btn" type="button">
-                <i class="fa fa-plus"></i> Create Post
-            </button>
-            {{else}}
-            <a href="/login" class="login-btn">Log In</a>
-            {{end}}
-        </div>
-    </nav>
-</header>
-
 <body>
+    <header class="navbar">
+        <div class="logo">
+            <h1><a href="/posts">Forum</a></h1>
+        </div>
+        <nav class="nav-right">
+            <div class="user-section">
+                <span class="username">{{if .Username}}{{ .Username }}{{end}}</span>
+                <img src="/static/defaultAV.png" alt="Profile Picture" class="profile-img">
+                {{if .Username}}
+                <a href="/logout" class="logout-btn">Log Out</a>
+                <button id="createPostBtn" class="btn create-post-btn" type="button">
+                    <i class="fa fa-plus"></i> Create Post
+                </button>
+                {{else}}
+                <a href="/login" class="login-btn">Log In</a>
+                {{end}}
+            </div>
+        </nav>
+    </header>
 
-    <form method="get" action="/posts">
-        <label for="category">Filter by category:</label>
-        <select id="category" name="category">
-            <option value="">-- All Categories --</option>
-            {{ range .AllCategories }}
-            <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
-            {{ end }}
-        </select>
-        <button type="submit">Filter</button>
-    </form>
-
-
-
-
-
-
+    <div class="filter-section">
+        <form method="get" action="/posts">
+            <label for="category">Filter by category:</label>
+            <select id="category" name="category">
+                <option value="">-- All Categories --</option>
+                {{ range .AllCategories }}
+                <option value="{{ . }}" {{ if eq $.SelectedCategory . }}selected{{ end }}>{{ . }}</option>
+                {{ end }}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+    </div>
 
     <main class="container">
         <div class="posts">
@@ -66,31 +622,31 @@
                     {{ end }}
                 </div>
                 <div class="post-header">
-                    <span class="user-id">{{ .Post_id }}</span>
-                    <span class="username-block">
-                        <span class="username">{{ .Username }}</span>
-                        <img src="/static/defaultAV.png" alt="User Avatar" class="user-avatar">
-                    </span>
-                    <span class="post-date">{{ .CreatedAt }}</span>
-                    <span class="content">
+                    <div class="post-meta">
+                        <span class="user-id">{{ .Post_id }}</span>
+                        <span class="username-block">
+                            <span class="username">{{ .Username }}</span>
+                            <img src="/static/defaultAV.png" alt="User Avatar" class="user-avatar">
+                        </span>
+                        <span class="post-date">{{ .CreatedAt }}</span>
+                    </div>
+                    <div class="content">
                         <h1>{{ .Content }}</h1>
-                    </span>
-
+                    </div>
                 </div>
-                <span>
-                    <form action="/likedislike" method="GET" class="like-dislike-form">
-                        <input type="hidden" name="post_id" value="{{ .Post_id }}">
-                        <button value="false" name="likedislike" class="btn dislike-btn" type="submit">
-                            <p>{{ .CountUserDislike }}</p>
-                            <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-                        </button>
-                        <button value="true" name="likedislike" class="btn like-btn" type="submit">
-                            <p>{{ .CountUserlike }}</p>
-                            <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-                        </button>
-                        <input type="hidden" name="" id="" value="{{.LikeDislike }}">
-                    </form>
-                </span>
+
+                <form action="/likedislike" method="GET" class="like-dislike-form">
+                    <input type="hidden" name="post_id" value="{{ .Post_id }}">
+                    <button value="false" name="likedislike" class="btn dislike-btn" type="submit">
+                        <p>{{ .CountUserDislike }}</p>
+                        <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <button value="true" name="likedislike" class="btn like-btn" type="submit">
+                        <p>{{ .CountUserlike }}</p>
+                        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <input type="hidden" name="" id="" value="{{.LikeDislike }}">
+                </form>
 
                 <div class="comment-section">
                     <form action="/comment" method="GET">
@@ -105,18 +661,14 @@
                     <button class="toggle-commenters-btn">Show Commenters</button>
                     <ul class="commenters-list hidden">
                         {{range .Commenters}}
-                        <!--  Contentcomment string Usercommnter string -->
                         <li>
                             <ul>
                                 <h1> <a href="#">{{ .Usercommnter }}</a></h1> {{.Contentcomment}}
+                            </ul>
                         </li>
+                        {{end}}
                     </ul>
-
-                    {{end}}
-                    </ul>
-
                 </div>
-
             </div>
             {{ end }}
         </div>
@@ -126,7 +678,7 @@
     <div id="createPostModal" class="modal small-modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn">&times;</span>
-            <h2 id="creatpost-title" style="text-align: center;">Share Your Thoughts</h2>
+            <h2 id="creatpost-title">Share Your Thoughts</h2>
             <form class="create-post-form" action="/creatpost" method="POST">
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required>
@@ -165,7 +717,6 @@
                                 <span>Other</span>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <button type="submit">Submit</button>
@@ -188,6 +739,23 @@
             }
         });
     </script>
+     <script>
+// Save scroll position before submitting comment forms
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function() {
+        localStorage.setItem('scrollPosition', window.scrollY);
+    });
+});
+
+// Restore scroll position after page reload
+window.addEventListener('load', function() {
+    const scrollY = localStorage.getItem('scrollPosition');
+    if (scrollY !== null) {
+        window.scrollTo(0, parseInt(scrollY));
+        localStorage.removeItem('scrollPosition');
+    }
+});
+</script>
 </body>
 
 </html>
