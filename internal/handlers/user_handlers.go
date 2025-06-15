@@ -17,6 +17,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Email already taken", Color: "red"},
+			{Error: "Username must be at least 5 characters", Color: "red"},
+			{Error: "Password must be at least 6 characters", Color: "red"},
+			{Error: "Email must be at least 6 characters", Color: "red"},
 			{Error: "Registration successful", Color: "green"},
 			{Error: "", Color: ""},
 		},
@@ -40,6 +43,15 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+
+	if len(email) < 6 || len(username) < 5 || len(password) < 6 {
+		tmpl, _ := template.ParseFiles("templates/register.html")
+		if len(email) < 6 { tmpl.Execute(w, Data.ErrorColor[3])} 
+		if len(username) < 5 { tmpl.Execute(w, Data.ErrorColor[1]) }
+		if len(password) < 6 { tmpl.Execute(w, Data.ErrorColor[2]) }
+								   
+		return
+	}
 
 	// Check if email exists
 	if _, err := db.GetUserByEmail(email); err == nil {
@@ -77,7 +89,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	Data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Password or email not correct", Color: "red"},
-			{Error: "Registration successful ", Color: "green"},
+			        
 			{Error: "", Color: ""},
 		},
 	}
@@ -100,6 +112,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")
+	if len(email) <6 {
+	tmpl, _ := template.ParseFiles("templates/login.html")
+
+	tmpl.Execute(w, Data.ErrorColor[0])
+	return
+
+	}
 
 	//  Tach---> oussama\\
 	//   can u Check all Errors possible About email And Password
