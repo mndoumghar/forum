@@ -106,15 +106,19 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rows, err = db.DB.Query(`
 			SELECT 
-				p.post_id, 
-				u.username, 
-				p.content,
-				p.status, 
-				p.created_at 
-			FROM 
-				posts p
-			JOIN 
-				users u ON p.user_id = u.user_id`)
+    p.post_id, 
+    u.username, 
+    p.content,
+    p.status, 
+    p.created_at 
+FROM 
+    posts p
+JOIN 
+    users u ON p.user_id = u.user_id
+ORDER BY 
+    p.created_at DESC
+				
+				`)
 	}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
