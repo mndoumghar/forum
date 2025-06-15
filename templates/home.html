@@ -571,6 +571,57 @@
                 min-width: unset;
             }
         }
+        /* New Comment Section Styles */
+.comments-container {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+}
+
+.comments-container h3 {
+    margin-bottom: 1rem;
+    color: #e6e6e6;
+}
+
+.comment-card {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #2a2a2a;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+
+.comment-author strong {
+    color: #1da1f2;
+    font-weight: 600;
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: #888;
+    margin-left: 0.5rem;
+}
+
+.comment-body p {
+    color: #ccc;
+    line-height: 1.5;
+}
+       
+        
+
 
 
         
@@ -672,13 +723,31 @@
                     </form>
                 </div>
 
-                <div class="commenters-container">
-                    <button class="toggle-commenters-btn">Show Commenters</button>
+                
+<div class="comments-container">
+    <h3>Comments</h3>
+    {{range .Commenters}}
+    <div class="comment-card">
+        <div class="comment-header">
+            <img src="/static/defaultAV.png" alt="User Avatar" class="comment-avatar">
+            <div class="comment-author">
+                <strong>{{.Usercommnter}}</strong>
+                <span class="comment-date">a few seconds ago</span> </div>
+        </div>
+        <div class="comment-body">
+            <p>{{.Contentcomment}}</p>
+        </div>
+    </div>
+    {{else}}
+    <p>No comments yet. Be the first to comment!</p>
+    {{end}}
+</div>
+                   
                     <ul class="commenters-list hidden">
                         {{range .Commenters}}
                         <li>
                             <ul>
-                                <h1> <a href="#">{{ .Usercommnter }}</a></h1> {{.Contentcomment}}
+                                <h1> <a href="#" class="commenter-username">{{ .Usercommnter }}</a></h1> {{.Contentcomment}}
                             </ul>
                         </li>
                         {{end}}
