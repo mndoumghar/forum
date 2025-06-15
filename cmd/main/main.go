@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"forum/internal/db"
 	"forum/internal/handlers"
-	"forum/internal/models"
-	"net/http"
 )
 
 func main() {
@@ -15,7 +17,6 @@ func main() {
 		return
 	}
 
-	// Register handlers All Function from Dossier Hanlres --->----
 	http.HandleFunc("/register", handlers.RegisterHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
 	http.HandleFunc("/posts", handlers.PostsHandler)
@@ -23,50 +24,28 @@ func main() {
 	http.HandleFunc("/comment", handlers.CommentHandler)
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
 	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
-	//http.HandleFunc("/filter", handlers.FilterByCategoryHandler)
-	//http.HandleFunc("/my-posts", handlers.MyPostsHandler)
-	//http.HandleFunc("/my-likes", handlers.MyLikedPostsHandler)
+	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		filePath := r.URL.Path[len("/static/"):] // Strip the /static/ prefix
+		fullPath := filepath.Join("static", filepath.Clean(filePath))
 
-	
-	//	http.HandleFunc("/comment", handlers.CommentHandler)
-	//	http.HandleFunc("/like", handlers.LikeHandler)
-
-	// Serve static files
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	// Add a root handler to serve index.html
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			//http.ServeFile(w, r, "static/index.html")
-			// Page Home
-			http.Redirect(w, r, "/posts", http.StatusSeeOther)
-
+		// Ensure it doesn't point to a directory or nested malformed file path
+		info, err := os.Stat(fullPath)
+		if err != nil || info.IsDir() {
+			handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", nil)
 			return
 		}
 
-		http.NotFound(w, r)
+		// Serve the file safely
+		http.ServeFile(w, r, fullPath)
 	})
 
-	categories := []string{
-		"Tech",
-		"News",
-		"Education",
-		"Jobs",
-		"Other",
-	}
-
-	dbConn, err := db.GetDBConnection() // Assuming GetDBConnection() returns the database connection
-	if err != nil {
-		fmt.Printf("Failed to get database connection: %v\n", err)
-		return
-	}
-
-	for _, cat := range categories {
-		err := models.AddCategory(dbConn, 1, 1, cat, cat) // post_id=1, user_id=1, status=cat, content=cat
-		if err != nil {
-			fmt.Println("Error adding category:", cat, err)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			http.Redirect(w, r, "/posts", http.StatusSeeOther)
+			return
 		}
-	}
+		handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", nil)
+	})
 
 	fmt.Println("server started at :8080\nVisit http://localhost:8080 to access the forum.")
 
