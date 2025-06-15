@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 	"time"
 )
@@ -35,7 +34,6 @@ func GetalldistCat(db *sql.DB) ([]string, error) {
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	fmt.Printf("Fetched categories: %v\n", categories)
 	return categories, nil
 }
 

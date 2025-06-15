@@ -95,13 +95,15 @@
             box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
         }
 
-        .login-btn, .logout-btn {
+        .login-btn,
+        .logout-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #e0e6ed;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .login-btn:hover, .logout-btn:hover {
+        .login-btn:hover,
+        .logout-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
@@ -178,7 +180,8 @@
             border-radius: 16px 16px 0 0;
         }
 
-        .left-categories, .right-categories {
+        .left-categories,
+        .right-categories {
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1rem;
@@ -264,7 +267,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .like-btn, .dislike-btn {
+        .like-btn,
+        .dislike-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #e0e6ed;
@@ -454,7 +458,8 @@
             color: #e0e6ed;
         }
 
-        .create-post-form input, .create-post-form textarea {
+        .create-post-form input,
+        .create-post-form textarea {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #e0e6ed;
@@ -463,7 +468,8 @@
             font-size: 0.95rem;
         }
 
-        .create-post-form input:focus, .create-post-form textarea:focus {
+        .create-post-form input:focus,
+        .create-post-form textarea:focus {
             outline: none;
             border-color: #4f46e5;
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -565,7 +571,7 @@
             content: " Comments";
         }
 
-        .comments-toggle-input:checked + .comments-toggle-btn::after {
+        .comments-toggle-input:checked+.comments-toggle-btn::after {
             content: " Comments (Hide)";
         }
 
@@ -576,7 +582,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .comments-toggle-input:checked ~ .comments-container {
+        .comments-toggle-input:checked~.comments-container {
             display: block;
         }
 
@@ -643,21 +649,21 @@
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .container {
                 padding: 0 1rem 1rem;
             }
-            
+
             .post-card {
                 padding: 1rem;
             }
-            
+
             .post-meta {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-            
+
             .like-dislike-form {
                 justify-content: center;
             }
@@ -700,16 +706,16 @@
         <form method="get" action="/posts">
             <label for="category">Filter by category:</label>
             <select id="category" name="category">
-               <option value="sport">Sport</option>
-               <option value="jobs">Jobs</option>
-               <option value="news">News</option>
-               <option value="movies">Movies</option>
-               <option value="tech">Tech</option>
-               <option value="other">Other</option>
+                <option value="sport">Sport</option>
+                <option value="jobs">Jobs</option>
+                <option value="news">News</option>
+                <option value="movies">Movies</option>
+                <option value="tech">Tech</option>
+                <option value="other">Other</option>
             </select>
             {{if .Username}}
-            <input type="radio" name="likemypost" id=""> Like  Post
-                        {{end}}
+            <input type="radio" name="likemypost" id=""> Like Post
+            {{end}}
 
             <button type="submit">Filter</button>
         </form>
@@ -731,7 +737,6 @@
                 </div>
                 <div class="post-header">
                     <div class="post-meta">
-                        <span class="user-id">{{ .Post_id }}</span>
                         <span class="username-block">
                             <span class="username">{{ .Username }}</span>
                             <img src="/static/defaultAV.png" alt="User Avatar" class="user-avatar">
@@ -739,7 +744,11 @@
                         <span class="post-date">{{ .CreatedAt }}</span>
                     </div>
                     <div class="content">
-                        <h1>{{ .Content }}</h1>
+                        <center>
+                            <h1>{{ .Title1 }}</h1>
+                            <pre>{{.Content}}</pre>
+                        </center>
+
                     </div>
                 </div>
 
@@ -770,7 +779,7 @@
                 <label for="comments-toggle-{{ .Post_id }}" class="comments-toggle-btn">
                     <i class="fa fa-comments"></i>Show
                 </label>
-                
+
                 <div class="comments-container">
                     <h3>Comments</h3>
                     {{range .Commenters}}
@@ -779,7 +788,8 @@
                             <img src="/static/defaultAV.png" alt="User Avatar" class="comment-avatar">
                             <div class="comment-author">
                                 <strong>{{.Usercommnter}}</strong>
-                                <span class="comment-date">a few seconds ago</span>
+
+                                <span class="comment-date">{{.TimePost}} {{ .TmieType }}</span>
                             </div>
                         </div>
                         <div class="comment-body">
@@ -807,7 +817,7 @@
                 <button type="button" id="toggleCategoryBtn" style="margin-bottom: 10px;">
                     Show/Hide Categories
                 </button>
-               <div id="category-section" style="display: none;">
+                <div id="category-section" style="display: none;">
                     <label>Category:</label>
                     <div class="category-buttons">
                         <label class="category-btn">
@@ -863,10 +873,10 @@
             }
         });
     </script>
-     <script>
+    <script>
         // Save scroll position before submitting comment forms
         document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', function() {
+            form.addEventListener('submit', function () {
                 const scrollY = window.scrollY;
                 // Store in a variable since localStorage is not available
                 window.tempScrollPosition = scrollY;
@@ -874,7 +884,7 @@
         });
 
         // Restore scroll position after page reload
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             if (window.tempScrollPosition !== undefined) {
                 window.scrollTo(0, window.tempScrollPosition);
                 delete window.tempScrollPosition;
