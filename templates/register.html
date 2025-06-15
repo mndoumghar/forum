@@ -119,15 +119,15 @@
             <div class="input-group">
 
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" minlength="4" maxlength="20">
+                <input type="text" id="username" name="username" minlength="4" maxlength="20" required>
             </div>
             <div class="input-group">
                 <label for="email">Email</label>
-                <input type="text" id="email" name="email" >
+                <input type="text" id="email" name="email" required pattern="^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" >
+                <input type="password" id="password" name="password" minlength="4" maxlength="20" required>
             </div>
             <input type="submit" name="register" value="Register">
             <div class="extra-options">

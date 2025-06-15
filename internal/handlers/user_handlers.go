@@ -46,10 +46,20 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := r.FormValue("email")
+	if !utils.ValidateEmail(email) {
+		ErrorHandler(w, http.StatusNotAcceptable, "invalid email format", nil)
+		return
+	}
 	username := r.FormValue("username")
+	if !utils.ValidateUsername(username) {
+		ErrorHandler(w, http.StatusNotAcceptable, "invalid username", nil)
+		return
+	}
 	password := r.FormValue("password")
-	
-
+	if !utils.ValidatePassword(password) {
+		ErrorHandler(w, http.StatusNotAcceptable, "invalid password", nil)
+		return
+	}
 	
 	if _, err := db.GetUserByEmailUsername(email); err == nil {
 		tmpl, _ := template.ParseFiles("templates/register.html")
