@@ -86,7 +86,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	selectedCategory := r.URL.Query().Get("category")
 
 	postFilter := r.URL.Query().Get("post") // "liked" or "disliked"
-	
+
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -274,7 +274,10 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", "")
 		return
 	}
-
+	http.SetCookie(w, &http.Cookie{
+		Name:  "last_visited",
+		Value: r.URL.String(),
+	})
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)

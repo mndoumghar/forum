@@ -8,9 +8,9 @@ import (
 )
 
 type LikeDislikeCount struct {
-	Count     int
-	CountAll  int
-	Reaction  string
+	Count    int
+	CountAll int
+	Reaction string
 }
 
 func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,10 +26,9 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := r.ParseForm(); err != nil {
-        ErrorHandler(w, http.StatusBadRequest, "Invalid form data", "")
-        return
-    }
-
+		ErrorHandler(w, http.StatusBadRequest, "Invalid form data", "")
+		return
+	}
 
 	// Get form values
 	likedislike := r.FormValue("likedislike")
@@ -44,7 +43,6 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Handle the reaction
 	if currentReaction != "" {
-		
 		if currentReaction == likedislike {
 			// User clicked same button - remove reaction
 			err = db.DeleteUserReaction(user_id, post_id)
@@ -62,6 +60,5 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-		    http.Redirect(w, r, "/posts#post-"+post_id, http.StatusSeeOther)
+	http.Redirect(w, r, "/posts#post-"+post_id, http.StatusSeeOther)
 }
-

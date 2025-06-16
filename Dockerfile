@@ -17,5 +17,3 @@ RUN go build -o forum ./cmd/main/main.go
 EXPOSE 8080
 
 CMD ["./forum"]
-
-

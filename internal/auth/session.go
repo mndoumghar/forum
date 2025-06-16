@@ -12,7 +12,6 @@ import (
 
 func CreateSession(w http.ResponseWriter, userID int) error {
 	sessionID, err := uuid.NewV4()
-	fmt.Println("UUid when Add Data base", sessionID)
 	if err != nil {
 		return err
 	}

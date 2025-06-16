@@ -12,6 +12,7 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 	user_id, err := auth.CheckSession(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
 	}
 
 	if r.Method != http.MethodGet {
@@ -22,7 +23,6 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		contentCommenter := r.FormValue("comment")
 
-
 		if contentCommenter == "" {
 
 			ErrorHandler(w, http.StatusBadRequest, "Bad Request, Please check your form data and try again.", "")
@@ -31,6 +31,15 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
+		if post_id != r.FormValue("categor") {
+			
+			ErrorHandler(w, http.StatusNotFound, "Failed to add comment, Please try again later.", "")
+			return
+
+		}
+
+
+
 
 		post_id_atoi, _ := strconv.Atoi(post_id)
 

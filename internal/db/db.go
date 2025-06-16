@@ -42,7 +42,12 @@ func InitDB() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
-		
+
+
+
+
+
+
 		CREATE TABLE IF NOT EXISTS comments (
 			comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			post_id INTEGER NOT NULL,
@@ -52,6 +57,13 @@ func InitDB() error {
 			FOREIGN KEY (post_id) REFERENCES posts(post_id),
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
+
+
+
+		
+
+
+
 		CREATE TABLE IF NOT EXISTS likedislike (
     likedislike_id INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id INTEGER NOT NULL,
