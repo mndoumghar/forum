@@ -52,12 +52,49 @@
         <input type="radio" name="post" value="" {{if eq .PostFilter ""}}checked{{end}}> All Posts
     </label>
     <label>
+        <input type="radio" name="post" value="my" {{if eq .PostFilter "my"}}checked{{end}}> My Posts
+    </label>
+    <label>
         <input type="radio" name="post" value="liked" {{if eq .PostFilter "liked"}}checked{{end}}> Liked Posts
     </label>
     <label>
         <input type="radio" name="post" value="disliked" {{if eq .PostFilter "disliked"}}checked{{end}}> Disliked Posts
     </label>
 </div>
+
+<script>
+document.querySelectorAll('input[name="post"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        
+        if (this.value) {
+            params.set('post', this.value);
+        } else {
+            params.delete('post');
+        }
+        
+        window.location.search = params.toString();
+    });
+});
+</script>
+<style>
+    .post-filter {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.post-filter label {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.post-filter input[type="radio"] {
+    margin-right: 5px;
+}
+</style>
 <script>
 document.querySelectorAll('input[name="post"]').forEach(radio => {
     radio.addEventListener('change', function() {

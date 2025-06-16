@@ -109,40 +109,63 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		JOIN
 			users u ON p.user_id = u.user_id
 	`
+switch {
+case selectedCategory != "" && postFilter != "":
+    // Handle combined category and post filter
+    switch postFilter {
+    case "my":
+        rows, err = db.DB.Query(baseQuery+`
+            WHERE p.status LIKE ? 
+            AND p.user_id = ?
+            ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id)
+    case "liked":
+        rows, err = db.DB.Query(baseQuery+`
+            JOIN likedislike ld ON p.post_id = ld.post_id
+            WHERE p.status LIKE ? 
+            AND ld.user_id = ?
+            AND ld.likedislike = 'true'
+            ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id)
+    case "disliked":
+        rows, err = db.DB.Query(baseQuery+`
+            JOIN likedislike ld ON p.post_id = ld.post_id
+            WHERE p.status LIKE ? 
+            AND ld.user_id = ?
+            AND ld.likedislike = 'false'
+            ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id)
+    }
 
-	switch {
-	case selectedCategory != "" && postFilter != "":
-		likeValue := "true"
-		if postFilter == "disliked" {
-			likeValue = "false"
-		}
-		rows, err = db.DB.Query(baseQuery+`
-			JOIN likedislike ld ON p.post_id = ld.post_id
-			WHERE p.status LIKE ? 
-			AND ld.user_id = ?
-			AND ld.likedislike = ?
-			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id, likeValue)
+case postFilter == "my":
+    // Filter only by my posts
+    rows, err = db.DB.Query(baseQuery+`
+        WHERE p.user_id = ?
+        ORDER BY p.created_at DESC`, user_id)
 
-	case selectedCategory != "":
-		rows, err = db.DB.Query(baseQuery+`
-			WHERE p.status LIKE ?
-			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%")
+case postFilter == "liked":
+    // Filter only by liked posts
+    rows, err = db.DB.Query(baseQuery+`
+        JOIN likedislike ld ON p.post_id = ld.post_id
+        WHERE ld.user_id = ?
+        AND ld.likedislike = 'true'
+        ORDER BY p.created_at DESC`, user_id)
 
-	case postFilter != "":
-		likeValue := "true"
-		if postFilter == "disliked" {
-			likeValue = "false"
-		}
-		rows, err = db.DB.Query(baseQuery+`
-			JOIN likedislike ld ON p.post_id = ld.post_id
-			WHERE ld.user_id = ?
-			AND ld.likedislike = ?
-			ORDER BY p.created_at DESC`, user_id, likeValue)
+case postFilter == "disliked":
+    // Filter only by disliked posts
+    rows, err = db.DB.Query(baseQuery+`
+        JOIN likedislike ld ON p.post_id = ld.post_id
+        WHERE ld.user_id = ?
+        AND ld.likedislike = 'false'
+        ORDER BY p.created_at DESC`, user_id)
 
-	default:
-		rows, err = db.DB.Query(baseQuery + ` ORDER BY p.created_at DESC`)
-	}
+case selectedCategory != "":
+    // Filter only by category
+    rows, err = db.DB.Query(baseQuery+`
+        WHERE p.status LIKE ?
+        ORDER BY p.created_at DESC`, "%"+selectedCategory+"%")
 
+default:
+    // No filters - get all posts
+    rows, err = db.DB.Query(baseQuery + ` ORDER BY p.created_at DESC`)
+}
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
 		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
