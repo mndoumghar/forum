@@ -17,11 +17,14 @@ func CommentReactionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get current user ID from session
+
 	userID, err := auth.CheckSession(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
+
+
 
 	// Parse form data
 	err = r.ParseForm()
@@ -32,7 +35,9 @@ func CommentReactionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get comment ID from form
 	commentIDStr := r.FormValue("comment_id")
+
 	commentID, err := strconv.Atoi(commentIDStr)
+
 	if err != nil {
 		ErrorHandler(w, http.StatusBadRequest, "Invalid comment ID", "")
 		return
@@ -40,11 +45,14 @@ func CommentReactionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get reaction type (like/dislike) from form
 	isLikeStr := r.FormValue("is_like")
+	
 	isLike, err := strconv.ParseBool(isLikeStr)
 	if err != nil {
 		ErrorHandler(w, http.StatusBadRequest, "Invalid reaction value", "")
 		return
 	}
+
+
 
 	// Check if user already reacted to this comment
 	var existingReaction bool

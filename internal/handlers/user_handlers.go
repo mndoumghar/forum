@@ -93,6 +93,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := auth.CheckSession(w, r)
 
+
 	if err == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -146,13 +147,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, Data.ErrorColor[0])
 		
 
-		http.Redirect(w, r, "/posts", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 		return
 	}
 	// Creat  Session And Session Starting ..
 	// THis is Session To stock a Value  --uuid
+	db.DB.Exec("DELETE FROM sessions WHERE user_id = ?", user.ID)
 	err = auth.CreateSession(w, user.ID)
+
 	if err != nil {
 		/// Erro If Not Data Session Noty Working
 		fmt.Println("Error Session Is Not Staritng")
