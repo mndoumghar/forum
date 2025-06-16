@@ -19,19 +19,3 @@ EXPOSE 8080
 CMD ["./forum"]
 
 
-# FROM golang:1.23 AS builder
-# WORKDIR /app
-# COPY go.mod ./
-# RUN go mod download
-# COPY . .
-# RUN go build -o forum ./cmd/main/main.go
-# FROM alpine:latest
-# WORKDIR /app
-# RUN apk add --no-cache tzdata ca-certificates
-# COPY --from=builder /app/forum .
-# COPY --from=builder /app/templates ./templates
-# COPY --from=builder /app/static ./static
-# EXPOSE 8080
-# CMD ["./forum"]
-
-
