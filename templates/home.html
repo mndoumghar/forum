@@ -44,7 +44,43 @@
                 <option value="other">Other</option>
             </select>
             {{if .Username}}
-            <input type="radio" name="likemypost" id=""> Like Post
+            <div class="filter-section">
+    <h3>Filter Posts</h3>
+    <div class="post-filter">
+        <label>
+            <input type="radio" name="post" value="" {{if eq .PostFilter ""}}checked{{end}} onclick="updateFilters()"> All Posts
+        </label>
+        <label>
+            <input type="radio" name="post" value="liked" {{if eq .PostFilter "liked"}}checked{{end}} onclick="updateFilters()"> Liked Posts
+        </label>
+        <label>
+            <input type="radio" name="post" value="disliked" {{if eq .PostFilter "disliked"}}checked{{end}} onclick="updateFilters()"> Disliked Posts
+        </label>
+    </div>
+</div>
+
+<script>
+function updateFilters() {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    
+    // Get selected post filter
+    const postFilter = document.querySelector('input[name="post"]:checked')?.value;
+    if (postFilter) {
+        params.set('post', postFilter);
+    } else {
+        params.delete('post');
+    }
+    
+    // Preserve category filter if it exists
+    const categoryFilter = "{{.SelectedCategory}}";
+    if (categoryFilter) {
+        params.set('category', categoryFilter);
+    }
+    
+    window.location.search = params.toString();
+}
+</script>
             {{end}}
 
             <button type="submit">Filter</button>

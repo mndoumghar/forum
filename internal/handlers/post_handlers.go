@@ -62,9 +62,9 @@ type Alldata struct {
 	SelectedCategory string
 	Cate             string
 	Cate2            string
+	PostFilter       string
 }
 
-// Helper to split categories into two slices
 func splitCategories(categories []string) (left, right []string) {
 	mid := (len(categories) + 1) / 2
 	left = categories[:mid]
@@ -82,8 +82,10 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Category filtering logic
+	// Get filter parameters
 	selectedCategory := r.URL.Query().Get("category")
+	postFilter := r.URL.Query().Get("post") // "liked" or "disliked"
+
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -91,38 +93,68 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var rows *sql.Rows
-	if selectedCategory != "" {
-		// Query posts that have the selected category in their status
+	baseQuery := `
+		SELECT
+			p.post_id,
+			u.username,
+			p.title,
+			p.content,
+			p.status,
+			p.created_at
+		FROM
+			posts p
+		JOIN
+			users u ON p.user_id = u.user_id
+	`
+
+	switch {
+	case selectedCategory != "" && postFilter != "":
+		// Filter by both category and liked/disliked status
+		var likeValue string
+		if postFilter == "liked" {
+			likeValue = "true"
+		} else {
+			likeValue = "false"
+		}
+		
 		rows, err = db.DB.Query(`
-			SELECT
-				p.post_id,
-				u.username,
-				p.title,
-				p.content,
-				p.status,
-				p.created_at
-			FROM
-				posts p
-			JOIN
-				users u ON p.user_id = u.user_id
-			WHERE
-				p.status LIKE ?`, "%"+selectedCategory+"%")
-	} else {
-		// Query all posts if no category is selected
+			`+baseQuery+`
+			JOIN likedislike ld ON p.post_id = ld.post_id
+			WHERE p.status LIKE ? 
+			AND ld.user_id = ?
+			AND ld.likedislike = ?
+			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id, likeValue)
+		
+	case selectedCategory != "":
+		// Filter by category only
 		rows, err = db.DB.Query(`
-			SELECT 
-				p.post_id, 
-				u.username, 
-				p.title,
-				p.content,
-				p.status, 
-				p.created_at 
-			FROM 
-				posts p
-			JOIN 
-				users u ON p.user_id = u.user_id
+			`+baseQuery+`
+			WHERE p.status LIKE ?
+			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%")
+		
+	case postFilter != "":
+		// Filter by liked/disliked only
+		var likeValue string
+		if postFilter == "liked" {
+			likeValue = "true"
+		} else {
+			likeValue = "false"
+		}
+		
+		rows, err = db.DB.Query(`
+			`+baseQuery+`
+			JOIN likedislike ld ON p.post_id = ld.post_id
+			WHERE ld.user_id = ?
+			AND ld.likedislike = ?
+			ORDER BY p.created_at DESC`, user_id, likeValue)
+		
+	default:
+		// No filters - get all posts
+		rows, err = db.DB.Query(`
+			`+baseQuery+`
 			ORDER BY p.created_at DESC`)
 	}
+
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
 		http.Error(w, "Error fetching post data", http.StatusInternalServerError)
@@ -230,6 +262,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		SelectedCategory: selectedCategory,
 		Cate:             selectedCategory,
 		Cate2:            "Category",
+		PostFilter:       postFilter,
 	}
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
