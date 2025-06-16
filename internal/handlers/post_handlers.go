@@ -86,7 +86,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	selectedCategory := r.URL.Query().Get("category")
 
 	postFilter := r.URL.Query().Get("post") // "liked" or "disliked"
-
+	
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -117,15 +117,15 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			likeValue = "false"
 		}
-		
+
 		rows, err = db.DB.Query(`
 			`+baseQuery+`
 			JOIN likedislike ld ON p.post_id = ld.post_id
 			WHERE p.status LIKE ? 
 			AND ld.user_id = ?
 			AND ld.likedislike = ?
-			ORDER BY p.created_at DESC`,"%"+selectedCategory+"%", user_id, likeValue)
-		
+			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id, likeValue)
+
 	case selectedCategory != "":
 
 		// Filter by category only
@@ -133,7 +133,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			`+baseQuery+`
 			WHERE p.status LIKE ?
 			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%")
-		
+
 	case postFilter != "":
 		// Filter by liked/disliked only
 		var likeValue string
@@ -142,18 +142,18 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			likeValue = "false"
 		}
-		
+
 		rows, err = db.DB.Query(`
 			`+baseQuery+`
 			JOIN likedislike ld ON p.post_id = ld.post_id
 			WHERE ld.user_id = ?
 			AND ld.likedislike = ?
 			ORDER BY p.created_at DESC`, user_id, likeValue)
-		
+
 	default:
 		// No filters - get all posts
 		rows, err = db.DB.Query(`
-			`+baseQuery+`
+			` + baseQuery + `
 			ORDER BY p.created_at DESC`)
 	}
 
@@ -165,7 +165,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var posts []PostWithUser
-	
+
 	for rows.Next() {
 		var p PostWithUser
 		err = rows.Scan(&p.Post_id, &p.Username, &p.Title1, &p.Content, &p.Status, &p.CreatedAt)
@@ -187,7 +187,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			err = rows2.Scan(&c.Contentcomment, &c.Usercommnter, &c.TimeCommnter)
 			duration := time.Since(c.TimeCommnter)
 			// Format the duration nicely
-			
+
 			if duration.Hours() >= 24 {
 				days := int(duration.Hours()) / 24
 				c.TimePost = days

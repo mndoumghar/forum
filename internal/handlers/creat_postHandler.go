@@ -39,6 +39,22 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		status := r.Form["status"]
+validCategories := map[string]bool{
+    "sport":  true,
+    "jobs":   true,
+    "news":   true,
+    "movies": true,
+    "tech":   true,
+}
+
+for _, selectedCategory := range status {
+    if !validCategories[selectedCategory] {
+        ErrorHandler(w, http.StatusBadRequest, "Bad Request, Please check your form data and try again.", "")
+        return
+    }
+}
+
+		
 		statusStr := strings.Join(status, " ")
 
 		title := r.FormValue("title")

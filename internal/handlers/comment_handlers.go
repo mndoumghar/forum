@@ -23,9 +23,14 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 		contentCommenter := r.FormValue("comment")
 
 
+		if contentCommenter == "" {
+
+			ErrorHandler(w, http.StatusBadRequest, "Bad Request, Please check your form data and try again.", "")
+			return
+		}
+
 		// input Hidden Send post_id In page Home
 		post_id := r.FormValue("post_id")
-			
 
 		post_id_atoi, _ := strconv.Atoi(post_id)
 
@@ -42,11 +47,8 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-
-
-		    http.Redirect(w, r, "/posts#post-"+post_id, http.StatusSeeOther)
+		http.Redirect(w, r, "/posts#post-"+post_id, http.StatusSeeOther)
 
 		return
 	}
-
 }

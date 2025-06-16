@@ -43,6 +43,8 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
+
+			
 			http.Redirect(w, r, "/posts", http.StatusSeeOther)
 			return
 		}
