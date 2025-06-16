@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
 	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
 	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+
 		filePath := r.URL.Path[len("/static/"):] // Strip the /static/ prefix
 		fullPath := filepath.Join("static", filepath.Clean(filePath))
 
@@ -37,6 +38,7 @@ func main() {
 
 		// Serve the file safely
 		http.ServeFile(w, r, fullPath)
+		
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

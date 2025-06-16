@@ -18,12 +18,12 @@ func ErrorHandler(w http.ResponseWriter, statusCode int, msg string, indecator s
 	data := struct {
 		Error_message string
 		Status        string
-		statusCode    int
+		Code    int
 		indec         string
 	}{
 		Error_message: msg,
 		Status:        http.StatusText(statusCode),
-		statusCode:    statusCode,
+		Code:    statusCode,
 		indec:         indecator,
 	}
 	tmpl.Execute(w, data)
