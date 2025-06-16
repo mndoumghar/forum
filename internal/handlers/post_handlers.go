@@ -26,11 +26,15 @@ type Post struct {
 }
 
 type DataComment struct {
+	CommentID      int
 	Contentcomment string
 	Usercommnter   string
 	TimeCommnter   time.Time
 	TimePost       int
 	TmieType       string
+	LikeCount      int
+	DislikeCount   int
+	UserReaction   int // 1 for like, 0 for dislike, -1 for no reaction
 }
 
 type PostWithUser struct {
@@ -82,10 +86,8 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get filter parameters
 	selectedCategory := r.URL.Query().Get("category")
-
-	postFilter := r.URL.Query().Get("post") // "liked" or "disliked"
+	postFilter := r.URL.Query().Get("post")
 
 	allCategories, err := models.GetalldistCat(db.DB)
 	if err != nil {
@@ -110,16 +112,11 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case selectedCategory != "" && postFilter != "":
-		// Filter by both category and liked/disliked status
-		var likeValue string
-		if postFilter == "liked" {
-			likeValue = "true"
-		} else {
+		likeValue := "true"
+		if postFilter == "disliked" {
 			likeValue = "false"
 		}
-
-		rows, err = db.DB.Query(`
-			`+baseQuery+`
+		rows, err = db.DB.Query(baseQuery+`
 			JOIN likedislike ld ON p.post_id = ld.post_id
 			WHERE p.status LIKE ? 
 			AND ld.user_id = ?
@@ -127,34 +124,23 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id, likeValue)
 
 	case selectedCategory != "":
-
-		// Filter by category only
-		rows, err = db.DB.Query(`
-			`+baseQuery+`
+		rows, err = db.DB.Query(baseQuery+`
 			WHERE p.status LIKE ?
 			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%")
 
 	case postFilter != "":
-		// Filter by liked/disliked only
-		var likeValue string
-		if postFilter == "liked" {
-			likeValue = "true"
-		} else {
+		likeValue := "true"
+		if postFilter == "disliked" {
 			likeValue = "false"
 		}
-
-		rows, err = db.DB.Query(`
-			`+baseQuery+`
+		rows, err = db.DB.Query(baseQuery+`
 			JOIN likedislike ld ON p.post_id = ld.post_id
 			WHERE ld.user_id = ?
 			AND ld.likedislike = ?
 			ORDER BY p.created_at DESC`, user_id, likeValue)
 
 	default:
-		// No filters - get all posts
-		rows, err = db.DB.Query(`
-			` + baseQuery + `
-			ORDER BY p.created_at DESC`)
+		rows, err = db.DB.Query(baseQuery + ` ORDER BY p.created_at DESC`)
 	}
 
 	if err != nil {
@@ -174,53 +160,76 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		// Fetch comments
-		rows2, err := db.DB.Query(`SELECT c.content, s.username, c.created_at FROM comments c JOIN users s ON c.user_id = s.user_id WHERE post_id = ? ORDER BY c.created_at DESC`, p.Post_id)
+		// Fetch comments with reactions
+		rows2, err := db.DB.Query(`
+			SELECT 
+				c.comment_id, 
+				c.content, 
+				u.username, 
+				c.created_at,
+				COALESCE(SUM(CASE WHEN cr.is_like = 1 THEN 1 ELSE 0 END), 0) AS like_count,
+				COALESCE(SUM(CASE WHEN cr.is_like = 0 THEN 1 ELSE 0 END), 0) AS dislike_count,
+				COALESCE((SELECT cr2.is_like FROM comment_reactions cr2 
+					WHERE cr2.comment_id = c.comment_id AND cr2.user_id = ?), -1) AS user_reaction
+			FROM comments c
+			JOIN users u ON c.user_id = u.user_id
+			LEFT JOIN comment_reactions cr ON c.comment_id = cr.comment_id
+			WHERE c.post_id = ?
+			GROUP BY c.comment_id
+			ORDER BY c.created_at DESC`, user_id, p.Post_id)
+		
 		if err != nil {
 			log.Printf("Error querying comments: %v", err)
-			ErrorHandler(w, http.StatusInternalServerError, "Error fetching comments, Please try again later.", "")
-			return
+			continue
 		}
+
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
-			err = rows2.Scan(&c.Contentcomment, &c.Usercommnter, &c.TimeCommnter)
-			duration := time.Since(c.TimeCommnter)
-			// Format the duration nicely
+			var userReaction sql.NullInt64
+			err = rows2.Scan(
+				&c.CommentID,
+				&c.Contentcomment,
+				&c.Usercommnter,
+				&c.TimeCommnter,
+				&c.LikeCount,
+				&c.DislikeCount,
+				&userReaction,
+			)
+			if err != nil {
+				log.Printf("Error scanning comment: %v", err)
+				continue
+			}
 
+			if userReaction.Valid {
+				c.UserReaction = int(userReaction.Int64)
+			} else {
+				c.UserReaction = -1
+			}
+
+			duration := time.Since(c.TimeCommnter)
 			if duration.Hours() >= 24 {
-				days := int(duration.Hours()) / 24
-				c.TimePost = days
+				c.TimePost = int(duration.Hours()) / 24
 				c.TmieType = "day(s) ago"
 			} else if duration.Hours() >= 1 {
-				hours := int(duration.Hours())
-				c.TimePost = hours
-				c.TmieType = " hour(s) ago"
+				c.TimePost = int(duration.Hours())
+				c.TmieType = "hour(s) ago"
 			} else if duration.Minutes() >= 1 {
-				minutes := int(duration.Minutes())
-				c.TimePost = minutes
-				c.TmieType = " minute(s) ago"
+				c.TimePost = int(duration.Minutes())
+				c.TmieType = "minute(s) ago"
 			} else {
 				c.TimePost = 0
 				c.TmieType = "just now"
 			}
 
-			if err != nil {
-				log.Printf("Error scanning comment: %v", err)
-				continue
-			}
 			comments = append(comments, c)
-		}
-		if err = rows2.Err(); err != nil {
-			log.Printf("Error iterating comments: %v", err)
 		}
 		rows2.Close()
 
-		// Get like/dislike information
+		// Get post reactions
 		db.DB.QueryRow("SELECT likedislike FROM likedislike WHERE post_id = ? AND user_id = ?", p.Post_id, user_id).Scan(&p.LikeDislike)
-		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
-		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
-		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? and user_id = ?", p.Post_id, user_id).Scan(&p.ColorValue)
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? AND likedislike = 'true'", p.Post_id).Scan(&p.CountUserlike)
+		db.DB.QueryRow("SELECT COUNT(*) FROM likedislike WHERE post_id = ? AND likedislike = 'false'", p.Post_id).Scan(&p.CountUserDislike)
 
 		if p.LikeDislike == "true" {
 			p.Colorlike = "blue"
@@ -230,7 +239,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 		p.Commenters = comments
 
-		// Split status into categories if comma-separated
+		// Split categories
 		statusList := []string{}
 		for _, s := range strings.Split(p.Status, ",") {
 			cat := strings.TrimSpace(s)
@@ -238,9 +247,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 				statusList = append(statusList, cat)
 			}
 		}
-		left, right := splitCategories(statusList)
-		p.LeftCategories = left
-		p.RightCategories = right
+		p.LeftCategories, p.RightCategories = splitCategories(statusList)
 		posts = append(posts, p)
 	}
 
@@ -248,7 +255,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error iterating posts: %v", err)
 	}
 
-	// Deduplicate allCategories
+	// Deduplicate categories
 	uniqueCategories := make(map[string]struct{})
 	dedupedCategories := []string{}
 	for _, cat := range allCategories {
@@ -257,31 +264,28 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			dedupedCategories = append(dedupedCategories, cat)
 		}
 	}
-	allCategories = dedupedCategories
 
 	data := Alldata{
 		Posts:            posts,
 		Username:         user.Usernameprofil,
-		AllCategories:    allCategories,
+		AllCategories:    dedupedCategories,
 		SelectedCategory: selectedCategory,
 		Cate:             selectedCategory,
 		Cate2:            "Category",
 		PostFilter:       postFilter,
 	}
+
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", "")
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "")
 		return
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:  "last_visited",
-		Value: r.URL.String(),
-	})
+
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error, Please try again later.", "")
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error", "")
 		return
 	}
 }

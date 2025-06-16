@@ -24,6 +24,9 @@ func main() {
 	http.HandleFunc("/comment", handlers.CommentHandler)
 	http.HandleFunc("/logout", handlers.LogoutHabndler)
 	http.HandleFunc("/likedislike", handlers.LikeDislikeHandler)
+	http.HandleFunc("/comment_reaction", handlers.CommentReactionHandler)
+
+
 	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
 
 		filePath := r.URL.Path[len("/static/"):] // Strip the /static/ prefix

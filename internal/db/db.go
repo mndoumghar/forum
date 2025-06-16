@@ -36,15 +36,12 @@ func InitDB() error {
 		CREATE TABLE IF NOT EXISTS posts (
 			post_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
-			title TEXT,
+			title TEXT ,
 			content TEXT,
 			status TEXT,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
-
-
-
 
 
 
@@ -57,7 +54,16 @@ func InitDB() error {
 			FOREIGN KEY (post_id) REFERENCES posts(post_id),
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);
-
+CREATE TABLE IF NOT EXISTS comment_reactions (
+    reaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comment_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    is_like BOOLEAN NOT NULL,  -- TRUE for like, FALSE for dislike
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (comment_id) REFERENCES comments(comment_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    UNIQUE(comment_id, user_id)  -- Each user can only react once per comment
+);
 
 
 		
