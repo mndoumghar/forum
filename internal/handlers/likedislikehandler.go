@@ -25,6 +25,12 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := r.ParseForm(); err != nil {
+        ErrorHandler(w, http.StatusBadRequest, "Invalid form data", "")
+        return
+    }
+
+
 	// Get form values
 	likedislike := r.FormValue("likedislike")
 	post_id := r.FormValue("post_id")
@@ -56,5 +62,6 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/posts", http.StatusSeeOther)
+		    http.Redirect(w, r, "/posts#post-"+post_id, http.StatusSeeOther)
 }
+

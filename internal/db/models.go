@@ -85,6 +85,7 @@ func GetUserReaction(user_id int, post_id string) (string, error) {
 // In your db package
 func InsertUserReaction(user_id int, post_id string, reaction string) error {
 	// Validate reaction before insertion
+	
 	if reaction != "true" && reaction != "false" {
 		return errors.New("invalid reaction value")
 	}

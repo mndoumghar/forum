@@ -43,6 +43,11 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 		title := r.FormValue("title")
 		content := r.FormValue("content")
+		if title == "" || content == ""  || len(status) == 0  {
+			ErrorHandler(w, http.StatusBadRequest, "Bad Request, Please check your form data and try again.", "")
+			return
+
+		}
 
 		// Insert post and get post_id
 		result, err := db.DB.Exec(
