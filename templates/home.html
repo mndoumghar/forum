@@ -714,7 +714,37 @@
                 <option value="other">Other</option>
             </select>
             {{if .Username}}
-            <input type="radio" name="likemypost" id=""> Like Post
+            <!-- Add this somewhere in your template, maybe near the category filter -->
+<div class="post-filter">
+    <label>
+        <input type="radio" name="post" value="" {{if eq .PostFilter ""}}checked{{end}}> All Posts
+    </label>
+    <label>
+        <input type="radio" name="post" value="liked" {{if eq .PostFilter "liked"}}checked{{end}}> Liked Posts
+    </label>
+    <label>
+        <input type="radio" name="post" value="disliked" {{if eq .PostFilter "disliked"}}checked{{end}}> Disliked Posts
+    </label>
+</div>
+<script>
+document.querySelectorAll('input[name="post"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Get current URL and parameters
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        
+        // Update or remove the post filter parameter
+        if (this.value) {
+            params.set('post', this.value);
+        } else {
+            params.delete('post');
+        }
+        
+        // Reload the page with new parameters
+        window.location.search = params.toString();
+    });
+});
+</script>
             {{end}}
 
             <button type="submit">Filter</button>

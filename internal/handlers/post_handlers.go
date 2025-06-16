@@ -84,6 +84,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get filter parameters
 	selectedCategory := r.URL.Query().Get("category")
+
 	postFilter := r.URL.Query().Get("post") // "liked" or "disliked"
 
 	allCategories, err := models.GetalldistCat(db.DB)
@@ -123,9 +124,10 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			WHERE p.status LIKE ? 
 			AND ld.user_id = ?
 			AND ld.likedislike = ?
-			ORDER BY p.created_at DESC`, "%"+selectedCategory+"%", user_id, likeValue)
+			ORDER BY p.created_at DESC`,"%"+selectedCategory+"%", user_id, likeValue)
 		
 	case selectedCategory != "":
+
 		// Filter by category only
 		rows, err = db.DB.Query(`
 			`+baseQuery+`
@@ -163,6 +165,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var posts []PostWithUser
+	
 	for rows.Next() {
 		var p PostWithUser
 		err = rows.Scan(&p.Post_id, &p.Username, &p.Title1, &p.Content, &p.Status, &p.CreatedAt)
@@ -181,11 +184,10 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
-			
 			err = rows2.Scan(&c.Contentcomment, &c.Usercommnter, &c.TimeCommnter)
 			duration := time.Since(c.TimeCommnter)
 			// Format the duration nicely
-
+			
 			if duration.Hours() >= 24 {
 				days := int(duration.Hours()) / 24
 				c.TimePost = days
