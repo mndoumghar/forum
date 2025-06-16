@@ -38,6 +38,7 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Handle the reaction
 	if currentReaction != "" {
+		
 		if currentReaction == likedislike {
 			// User clicked same button - remove reaction
 			err = db.DeleteUserReaction(user_id, post_id)

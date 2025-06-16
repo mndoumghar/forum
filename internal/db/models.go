@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -80,13 +81,22 @@ func GetUserReaction(user_id int, post_id string) (string, error) {
 }
 
 // InsertUserReaction adds a new reaction
+
+// In your db package
 func InsertUserReaction(user_id int, post_id string, reaction string) error {
+	// Validate reaction before insertion
+	if reaction != "true" && reaction != "false" {
+		return errors.New("invalid reaction value")
+	}
+
 	_, err := DB.Exec(
 		"INSERT INTO likedislike(user_id, post_id, likedislike) VALUES(?,?,?)",
 		user_id, post_id, reaction,
 	)
 	return err
 }
+
+// Similar validation for UpdateUserReaction
 
 // UpdateUserReaction changes existing reaction
 func UpdateUserReaction(user_id int, post_id string, newReaction string) error {

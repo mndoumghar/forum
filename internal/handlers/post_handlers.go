@@ -181,9 +181,11 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		var comments []DataComment
 		for rows2.Next() {
 			var c DataComment
+			
 			err = rows2.Scan(&c.Contentcomment, &c.Usercommnter, &c.TimeCommnter)
 			duration := time.Since(c.TimeCommnter)
 			// Format the duration nicely
+
 			if duration.Hours() >= 24 {
 				days := int(duration.Hours()) / 24
 				c.TimePost = days
