@@ -118,19 +118,21 @@ function updateFilters() {
                     </div>
                 </div>
 
-                <form action="/likedislike" method="GET" class="like-dislike-form">
-                    <input type="hidden" name="post_id" value="{{ .Post_id }}">
-                    <button value="false" name="likedislike" class="btn dislike-btn" type="submit">
-                        <p>{{ .CountUserDislike }}</p>
-                        <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-                    </button>
-                    <button value="true" name="likedislike" class="btn like-btn" type="submit">
-                        <p>{{ .CountUserlike }}</p>
-                        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-                    </button>
-                    <input type="hidden" name="" id="" value="{{.LikeDislike }}">
-                </form>
-
+              <form action="/likedislike" method="POST" class="like-dislike-form">
+    <input type="hidden" name="post_id" value="{{ .Post_id }}">
+    
+    <!-- Like Button -->
+    <button type="submit" name="likedislike" value="true" class="btn like-btn {{if eq .LikeDislike "true"}}active{{end}}">
+        <span>{{ .CountUserlike }}</span>
+        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
+    </button>
+    
+    <!-- Dislike Button -->
+    <button type="submit" name="likedislike" value="false" class="btn dislike-btn {{if eq .LikeDislike "false"}}active{{end}}">
+        <span>{{ .CountUserDislike }}</span>
+        <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
+    </button>
+</form>
                 <div class="comment-section">
                     <form action="/comment" method="GET">
                         <label  for="comment">Commenter:</label>
