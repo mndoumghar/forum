@@ -33,7 +33,7 @@ func CommentHandler(w http.ResponseWriter, r *http.Request) {
 		post_id := r.FormValue("post_id")
 		if post_id != r.FormValue("categor") {
 			
-			ErrorHandler(w, http.StatusNotFound, "Failed to add comment, Please try again later.", "")
+			ErrorHandler(w, http.StatusBadRequest, "Failed to add comment, Please try again later.", "")
 			return
 
 		}
