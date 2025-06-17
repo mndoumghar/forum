@@ -49,6 +49,7 @@ func main() {
 			http.Redirect(w, r, "/posts", http.StatusSeeOther)
 			return
 		}
+		
 		handlers.ErrorHandler(w, http.StatusNotFound, "path not exist", "")
 	})
 

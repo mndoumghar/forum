@@ -14,6 +14,11 @@ import (
 )
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.RawQuery != "" {
+		http.Redirect(w, r, "/register", http.StatusSeeOther)
+		return
+	}
+	
 	_, err := auth.CheckSession(w, r)
 
 	if err == nil {
@@ -91,80 +96,73 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 // Login Page if Exist Your Information
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	// Check for existing session
 	_, err := auth.CheckSession(w, r)
-
-
 	if err == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
-	// Declar Struct Type Error From CSS
-	Data := models.Data{
+
+	// Predefined error messages
+	data := models.Data{
 		ErrorColor: []models.ErrorRegister{
 			{Error: "Password or email not correct", Color: "red"},
-			{Error: "Registration successful ", Color: "green"},
+			{Error: "Registration successful", Color: "green"},
 			{Error: "", Color: ""},
 		},
 	}
 
-	if r.Method == http.MethodGet {
+	switch r.Method {
+	case http.MethodGet:
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
+			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, please try again later.", "")
 			return
 		}
-
 		tmpl.Execute(w, nil)
 		return
-	}
 
-	if r.Method != http.MethodPost {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed, Please use the correct HTTP method.", "")
-		return
-	}
+	case http.MethodPost:
+		email := r.FormValue("email")
+		password := r.FormValue("password")
 
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-
-	user, err := db.GetUserByEmail(email)
-	if err != nil {
-		tmpl, err := template.ParseFiles("templates/login.html")
+		user, err := db.GetUserByEmail(email)
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
+			renderLoginWithError(w, data.ErrorColor[0])
 			return
 		}
-		tmpl.Execute(w, Data.ErrorColor[0])
-		return
-	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-
-		tmpl, err := template.ParseFiles("templates/login.html")
-		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "Internal server error, Please try again later.", "")
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+			renderLoginWithError(w, data.ErrorColor[0])
 			return
 		}
-		tmpl.Execute(w, Data.ErrorColor[0])
-		
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		// Clear old sessions and create a new one
+		db.DB.Exec("DELETE FROM sessions WHERE user_id = ?", user.ID)
+		err = auth.CreateSession(w, user.ID)
+		if err != nil {
+			fmt.Println("Error: Session not starting")
+			ErrorHandler(w, http.StatusInternalServerError, "Session error, please try again later.", "")
+			return
+		}
 
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 		return
-	}
-	// Creat  Session And Session Starting ..
-	// THis is Session To stock a Value  --uuid
-	db.DB.Exec("DELETE FROM sessions WHERE user_id = ?", user.ID)
-	err = auth.CreateSession(w, user.ID)
 
-	if err != nil {
-		/// Erro If Not Data Session Noty Working
-		fmt.Println("Error Session Is Not Staritng")
-		ErrorHandler(w, http.StatusInternalServerError, "Session error, Please try again later.", "")
-		return
+	default:
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed. Please use the correct HTTP method.", "")
 	}
-
-	// Header Page "Home.html"
-	http.Redirect(w, r, "/posts", http.StatusSeeOther)
 }
+
+// Helper function to render login template with error data
+func renderLoginWithError(w http.ResponseWriter, errorData models.ErrorRegister) {
+	tmpl, err := template.ParseFiles("templates/login.html")
+	if err != nil {
+		ErrorHandler(w, http.StatusInternalServerError, "Internal server error, please try again later.", "")
+		return
+	}
+	tmpl.Execute(w, errorData)
+}
+
 
 // handlink passwrd formats
