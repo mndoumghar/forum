@@ -56,7 +56,7 @@ func LikeDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Failed to update reaction", "")
+		ErrorHandler(w, http.StatusBadRequest, "Failed to update reaction", "")
 		return
 	}
 
